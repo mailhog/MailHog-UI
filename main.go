@@ -32,7 +32,7 @@ func main() {
 	cb := func(app *gotcha.App) {
 		web.CreateWeb(conf, app)
 	}
-	go http.Listen(conf.HTTPBindAddr, assets.Asset, exitCh, cb)
+	go http.Listen(conf.UIBindAddr, assets.Asset, exitCh, cb)
 
 	for {
 		select {
