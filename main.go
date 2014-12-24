@@ -6,23 +6,21 @@ import (
 
 	"github.com/ian-kent/go-log/log"
 	gotcha "github.com/ian-kent/gotcha/app"
-	"github.com/mailhog/MailHog-Server/config"
 	"github.com/mailhog/MailHog-UI/assets"
+	"github.com/mailhog/MailHog-UI/config"
 	"github.com/mailhog/MailHog-UI/web"
 	"github.com/mailhog/http"
 )
 
 var conf *config.Config
 var exitCh chan int
-var host string
 
 func configure() {
 	config.RegisterFlags()
-	flag.StringVar(&host, "api-host", "", "API host for MailHog UI to connect to")
 	flag.Parse()
 	conf = config.Configure()
 	// FIXME hacky
-	web.Host = host
+	web.APIHost = conf.APIHost
 }
 
 func main() {
@@ -34,7 +32,7 @@ func main() {
 	cb := func(app *gotcha.App) {
 		web.CreateWeb(conf, app)
 	}
-	go http.Listen(conf, assets.Asset, exitCh, cb)
+	go http.Listen(conf.HTTPBindAddr, assets.Asset, exitCh, cb)
 
 	for {
 		select {
