@@ -3,10 +3,10 @@ package web
 import (
 	"html/template"
 
-	"github.com/ian-kent/Go-MailHog/MailHog-Server/config"
 	gotcha "github.com/ian-kent/gotcha/app"
 	"github.com/ian-kent/gotcha/events"
 	"github.com/ian-kent/gotcha/http"
+	"github.com/mailhog/MailHog-Server/config"
 )
 
 type Web struct {
