@@ -13,6 +13,7 @@ fmt:
 
 deps:
 	#FIXME cleanup this
+	go get github.com/mailhog/http
 	go get github.com/ian-kent/gotcha/gotcha
 	go get github.com/ian-kent/go-log/log
 	go get github.com/ian-kent/envconf
