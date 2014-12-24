@@ -1,4 +1,4 @@
-MailHog UI [![Build Status](https://travis-ci.org/mailhog/smtp.svg?branch=master)](https://travis-ci.org/mailhog/smtp)
+MailHog UI [![Build Status](https://travis-ci.org/mailhog/MailHog-UI.svg?branch=master)](https://travis-ci.org/mailhog/MailHog-UI)
 =========
 
 MailHog-UI is the MailHog web based user interface.
