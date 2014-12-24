@@ -11,6 +11,8 @@ function guid() {
 }
 
 mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
+  $scope.host = apiHost;
+
   $scope.cache = {};
   $scope.previewAllHeaders = false;
 
@@ -30,7 +32,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
     $scope.source == null ? $scope.openStream() : $scope.closeStream();
   }
   $scope.openStream = function() {
-    $scope.source = new EventSource('/api/v1/events');
+    $scope.source = new EventSource($scope.host + '/api/v1/events');
     $scope.source.addEventListener('message', function(e) {
       $scope.$apply(function() {
         $scope.messages.push(JSON.parse(e.data));
@@ -121,7 +123,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
 
   $scope.refresh = function() {
     var e = $scope.startEvent("Loading messages", null, "glyphicon-download");
-    $http.get('/api/v1/messages').success(function(data) {
+    $http.get($scope.host + '/api/v1/messages').success(function(data) {
       $scope.messages = data;
       e.done();
     });
@@ -135,7 +137,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   	} else {
   		$scope.preview = message;
       var e = $scope.startEvent("Loading message", message.ID, "glyphicon-download-alt");
-	  	$http.get('/api/v1/messages/' + message.ID).success(function(data) {
+	  	$http.get($scope.host + '/api/v1/messages/' + message.ID).success(function(data) {
 	  	  $scope.cache[message.ID] = data;
 	      data.previewHTML = $sce.trustAsHtml($scope.getMessageHTML(data));
   		  $scope.preview = data;
@@ -248,7 +250,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
 
     var e = $scope.startEvent("Releasing message", message.ID, "glyphicon-share");
 
-    $http.post('/api/v1/messages/' + message.ID + '/release', {
+    $http.post($scope.host + '/api/v1/messages/' + message.ID + '/release', {
       email: $('#release-message-email').val(),
       host: $('#release-message-smtp-host').val(),
       port: $('#release-message-smtp-port').val(),
@@ -273,7 +275,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   $scope.deleteAllConfirm = function() {
   	$('#confirm-delete-all').modal('hide');
     var e = $scope.startEvent("Deleting all messages", null, "glyphicon-remove-circle");
-  	$http.delete('/api/v1/messages').success(function() {
+  	$http.delete($scope.host + '/api/v1/messages').success(function() {
   		$scope.refresh();
   		$scope.preview = null;
       e.done()
@@ -282,7 +284,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
 
   $scope.deleteOne = function(message) {
     var e = $scope.startEvent("Deleting message", message.ID, "glyphicon-remove");
-  	$http.delete('/api/v1/messages/' + message.ID).success(function() {
+  	$http.delete($scope.host + '/api/v1/messages/' + message.ID).success(function() {
   		if($scope.preview._id == message._id) $scope.preview = null;
   		$scope.refresh();
       e.done();

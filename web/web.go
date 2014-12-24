@@ -9,6 +9,8 @@ import (
 	"github.com/mailhog/MailHog-Server/config"
 )
 
+var Host string
+
 type Web struct {
 	config *config.Config
 	app    *gotcha.App
@@ -36,6 +38,7 @@ func CreateWeb(cfg *config.Config, app *gotcha.App) *Web {
 }
 
 func Index(session *http.Session) {
+	session.Stash["Host"] = Host
 	html, _ := session.RenderTemplate("index.html")
 
 	session.Stash["Page"] = "Browse"
