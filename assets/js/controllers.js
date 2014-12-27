@@ -10,6 +10,19 @@ function guid() {
          s4() + '-' + s4() + s4() + s4();
 }
 
+mailhogApp.directive('ngKeyEnter', function () {
+  return function (scope, element, attrs) {
+    element.bind("keydown keypress", function (event) {
+      if(event.which === 13) {
+        scope.$apply(function (){
+          scope.$eval(attrs.ngKeyEnter);
+        });
+        event.preventDefault();
+      }
+    });
+  };
+});
+
 mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   $scope.host = apiHost;
 
@@ -24,9 +37,36 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   $scope.hasEventSource = false;
   $scope.source = null;
 
+  $scope.itemsPerPage = 50
+  $scope.startIndex = 0
+
+  $scope.startMessages = 0
+  $scope.countMessages = 0
+  $scope.totalMessages = 0
+
+  $scope.startSearchMessages = 0
+  $scope.countSearchMessages = 0
+  $scope.totalSearchMessages = 0
+
   $(function() {
     $scope.openStream();
   });
+
+  $scope.getMoment = function(a) {
+    return moment(a)
+  }
+
+  $scope.backToInbox = function() {
+    $scope.preview = null;
+    $scope.searching = false;
+  }
+  $scope.backToInboxFirst = function() {
+    $scope.preview = null;
+    $scope.startIndex = 0;
+    $scope.startMessages = 0;
+    $scope.searching = false;
+    $scope.refresh();
+  }
 
   $scope.toggleStream = function() {
     $scope.source == null ? $scope.openStream() : $scope.closeStream();
@@ -35,7 +75,19 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
     $scope.source = new EventSource($scope.host + '/api/v1/events');
     $scope.source.addEventListener('message', function(e) {
       $scope.$apply(function() {
-        $scope.messages.push(JSON.parse(e.data));
+        $scope.totalMessages++;
+        if ($scope.startIndex > 0) {
+          $scope.startIndex++;
+          $scope.startMessages++;
+          return
+        }
+        if ($scope.countMessages < $scope.itemsPerPage) {
+          $scope.countMessages++;
+        }
+        $scope.messages.unshift(JSON.parse(e.data));
+        while($scope.messages.length > $scope.itemsPerPage) {
+          $scope.messages.pop();
+        }
       });
     }, false);
     $scope.source.addEventListener('open', function(e) {
@@ -59,6 +111,21 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
 
   $scope.tryDecodeMime = function(str) {
     return unescapeFromMime(str)
+  }
+
+  $scope.resizePreview = function() {
+    $('.tab-content').height($(window).innerHeight() - $('.tab-content').offset().top);
+  }
+
+  $scope.getDisplayName = function(value) {
+    res = value.match(/(.*)\<(.*)\>/);
+    if(res) {
+      if(res[1].trim().length > 0) {
+        return res[1].trim();
+      }
+      return res[2];
+    }
+    return value
   }
 
   $scope.startEvent = function(name, args, glyphicon) {
@@ -118,22 +185,76 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   }
 
   $scope.messagesDisplayed = function() {
-    return $('#messages-container table tbody tr').length
+    return $('.messages .msglist-message').length
   }
 
   $scope.refresh = function() {
+    if ($scope.searching) {
+      return $scope.refreshSearch();
+    }
     var e = $scope.startEvent("Loading messages", null, "glyphicon-download");
-    $http.get($scope.host + '/api/v1/messages').success(function(data) {
-      $scope.messages = data;
+    var url = $scope.host + '/api/v2/messages'
+    if($scope.startIndex > 0) {
+      url += "?start=" + $scope.startIndex;
+    }
+    $http.get(url).success(function(data) {
+      $scope.messages = data.items;
+      $scope.totalMessages = data.total;
+      $scope.countMessages = data.count;
+      $scope.startMessages = data.start;
       e.done();
     });
   }
   $scope.refresh();
 
+  $scope.showNewer = function() {
+    $scope.startIndex -= $scope.itemsPerPage;
+    if($scope.startIndex < 0) {
+      $scope.startIndex = 0
+    }
+    $scope.refresh();
+  }
+
+  $scope.showOlder = function() {
+    $scope.startIndex += $scope.itemsPerPage;
+    $scope.refresh();
+  }
+
+  $scope.search = function(kind, text) {
+    $scope.searching = true;
+    $scope.searchKind = kind;
+    $scope.searchedText = text;
+    $scope.searchText = "";
+    $scope.startSearchMessages = 0
+    $scope.countSearchMessages = 0
+    $scope.totalSearchMessages = 0
+    $scope.refreshSearch()
+  }
+
+  $scope.refreshSearch = function() {
+    var url = $scope.host + '/api/v2/search?kind=' + $scope.searchKind + '&query=' + $scope.searchedText;
+    if($scope.startIndex > 0) {
+      url += "&start=" + $scope.startIndex;
+    }
+    $http.get(url).success(function(data) {
+      $scope.searchMessages = data.items;
+      $scope.totalSearchMessages = data.total;
+      $scope.countSearchMessages = data.count;
+      $scope.startSearchMessages = data.start;
+    });
+  }
+
+  $scope.hasSelection = function() {
+    return $(".messages :checked").length > 0 ? true : false;
+  }
+
   $scope.selectMessage = function(message) {
+    $timeout(function(){
+      $scope.resizePreview();
+    }, 0);
   	if($scope.cache[message.ID]) {
   		$scope.preview = $scope.cache[message.ID];
-      reflow();
+      //reflow();
   	} else {
   		$scope.preview = message;
       var e = $scope.startEvent("Loading message", message.ID, "glyphicon-download-alt");
@@ -142,7 +263,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
 	      data.previewHTML = $sce.trustAsHtml($scope.getMessageHTML(data));
   		  $scope.preview = data;
   		  preview = $scope.cache[message.ID];
-        reflow();
+        //reflow();
         e.done();
 	    });
 	}
@@ -150,16 +271,19 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
 
   $scope.toggleHeaders = function(val) {
     $scope.previewAllHeaders = val;
+    $timeout(function(){
+      $scope.resizePreview();
+    }, 0);
     var t = window.setInterval(function() {
       if(val) {
         if($('#hide-headers').length) {
           window.clearInterval(t);
-          reflow();
+          //reflow();
         }
       } else {
         if($('#show-headers').length) {
           window.clearInterval(t);
-          reflow();
+          //reflow();
         }
       }
     }, 10);

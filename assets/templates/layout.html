@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.15/angular.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.js"></script>
     <script src="/js/strutil.js"></script>
     <script src="/js/controllers.js"></script>
     <style>
@@ -20,11 +21,15 @@
         right: 0;
         width: 100%;
         border-bottom: 1px solid #ccc;
+        background: #ccc;
       }
       .navbar-header img {
         height: 35px;
         margin: 8px 0 0 5px;
         float: left;
+      }
+      .pad-top {
+        padding-top: 51px;
       }
       .navbar-nav.navbar-right:last-child {
         margin-right: 0; /* bootstrap fix?! */
@@ -35,21 +40,21 @@
         height: 16px;
         display: inline-block;
       }
+      .ajax-event-ul {
+        margin: 0;
+        padding: 0;
+      }
       .ajax-event {
-        padding: 5px;
-        width: 225px;
       }
       .ajax-event h1 {
         font-size: 1em;
         padding: 2px;
         margin: 0;
-        padding-left: 20px;
       }
       .ajax-event h2 {
         font-size: 0.8em;
         padding: 2px;
         margin: 0;
-        padding-left: 20px;
       }
       .ajax-event .glyphicon {
         float: left;
@@ -85,59 +90,112 @@
       .ev_bad {
         color: red;
       }
+
+      #search {
+        width: 500px;
+      }
+
+      .sidebar-item {
+        padding: 5px;
+      }
+
+      .wrapper {
+        position: absolute;
+        top: 96px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+      .wrapper2 {
+        position: absolute;
+        top: 51px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+      .inner {
+        overflow-y: scroll;
+        height: 100%;
+      }
+      .inner > :last-child {
+        margin-bottom: 15px;
+      }
+      .row.no-margin {
+        margin-left: 0;
+        margin-right: 0;
+      }
+      .full-height {
+        height: 100%;
+      }
     </style>
   </head>
-  <body ng-controller="MailCtrl">
-    <nav class="navbar navbar-default navbar-static-top" role="navigation">
-      <div class="navbar-header">
-        <img src="/images/hog.png">
-        <a class="navbar-brand" href="#">MailHog</a>
+  <body ng-controller="MailCtrl" ng-click="keepopen=false">
+    <div class="row no-margin">
+      <div class="col-md-2">
+        <nav class="navbar navbar-default navbar-static-top" role="navigation">
+          <div class="navbar-header">
+            <img src="/images/hog.png">
+            <a class="navbar-brand" href="#">MailHog</a>
+          </div>
+        </nav>
       </div>
-      <ul class="nav navbar-nav navbar-left navbar-subtext">
-        <li>
-          <a>{{ messagesDisplayed() }} {{ searchText ? "of " + messages.length : "" }} messages</a>
-        </li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li ng-if="eventCount > 0" class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <span ng-if="eventCount > eventDone" class="ajax-loader"></span>
-            {{ eventCount - eventDone }} pending<span ng-if="eventFailed > 0"> ({{ eventFailed}} failed)</span> <span ng-if="eventDone > 0"> ({{ eventDone}} complete)</span> <b class="caret"></b>
-          </a>
-          <ul class="dropdown-menu">
-            <li ng-class="e.getClass()" ng-repeat="(id, e) in eventsPending" class="ajax-event">
-              <span class="glyphicon {{ e.glyphicon }}"></span>
-              <button ng-if="e.failed" ng-click="e.remove()" class="btn btn-xs btn-danger pull-right"><span class="glyphicon glyphicon-remove"></span></button>
-              <h1>{{ e.name }}</h1>
-              <h2 ng-if="e.args">{{ e.args }}</h2>
-              <h2 ng-if="e.error">{{ e.error }}</h2>
+      <div class="col-md-10">
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="height: 51px;">
+          <ul class="nav navbar-nav">
+            <li>
+              <form class="navbar-form navbar-left" role="search">
+                <div class="form-group left-inner-addon">
+                  <i class="glyphicon glyphicon-search"></i>
+                  <input ng-model="searchText" type="text" ng-key-enter="search('containing', searchText)" class="form-control" autocomplete="off" placeholder="Search" id="search" ng-focus="keepopen=true" ng-click="$event.stopPropagation()">
+                  <div class="list-group" ng-if="searchText.length > 0 && keepopen">
+                    <a href="#" ng-click="search('containing', searchText)" class="list-group-item"><span style="margin-right: 8px; color: #999" class="glyphicon glyphicon-search"></span> Find messages <strong>containing</strong> {{ searchText }}</a>
+                    <a href="#" ng-click="search('to', searchText)" class="list-group-item"><span style="margin-right: 8px; color: #999" class="glyphicon glyphicon-search"></span> Find messages <strong>to</strong> {{ searchText }}</a>
+                    <a href="#" ng-click="search('from', searchText);" class="list-group-item"><span style="margin-right: 8px; color: #999" class="glyphicon glyphicon-search"></span> Find messages <strong>from</strong> {{ searchText }}</a>
+                  </div>
+                </div>
+              </form>
             </li>
           </ul>
-        </li>
-        <li>
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Event stream connected" ng-click="toggleStream()">
-            <span class="glyphicon glyphicon-asterisk {{ hasEventSource ? 'ev_good' : 'ev_bad' }}"></span>
-          </a>
-        </li>
-        <li>
-          <form class="navbar-form navbar-left" role="search">
-            <div class="form-group left-inner-addon">
-              <i class="glyphicon glyphicon-search"></i>
-              <input ng-model="searchText" type="text" class="form-control" placeholder="Search">
-            </div>
-          </form>
-        </li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Options <b class="caret"></b></a>
-          <ul class="dropdown-menu">
-            <li><a href="#" ng-click="refresh()"><span class="glyphicon glyphicon-download"></span> Refresh</a></li>
-            <li class="divider"></li>
-            <li><a href="#" ng-click="deleteAll()"><span class="glyphicon glyphicon-remove-circle"></span> Delete all messages</a></li>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a target="_blank" href="https://github.com/mailhog/MailHog"><img src="/images/github.png" style="width: 16px;" /> GitHub</a></li>
           </ul>
-        </li>
-        <li><a target="_blank" href="https://github.com/mailhog/MailHog"><img src="/images/github.png" style="width: 16px;" /> GitHub</a></li>
-      </ul>
-    </nav>
-    [: .Content :]
+        </nav>
+      </div>
+    </div>
+
+    <div class="row no-margin wrapper2">
+      <div class="col-md-2">
+        <div class="sidebar-item" style="margin-top: 10px;">
+          <span class="glyphicon glyphicon-off {{ hasEventSource ? 'ev_good' : 'ev_bad' }}"></span>
+          <a href="#" title="Event stream connected" ng-click="toggleStream()">
+            {{ hasEventSource ? 'Connected' : 'Disconnected' }}
+          </a>
+        </div>
+        <div class="sidebar-item">
+          <a href="#" ng-click="backToInboxFirst()">Inbox ({{totalMessages}})</a>
+        </div>
+        <div class="sidebar-item">
+          <a href="#" ng-click="deleteAll()"><span class="glyphicon glyphicon-remove-circle"></span> Delete all messages</a>
+        </div>
+      </div>
+      <div class="col-md-10 full-height">
+        [: .Content :]
+      </div>
+      <!--
+      <div>
+        <span ng-if="eventCount > eventDone" class="ajax-loader"></span>
+        {{ eventCount - eventDone }} pending<span ng-if="eventFailed > 0"> ({{ eventFailed}} failed)</span> <span ng-if="eventDone > 0"> ({{ eventDone}} complete)</span> <b class="caret"></b>
+        <ul class="ajax-event-ul">
+          <li ng-class="e.getClass()" ng-repeat="(id, e) in eventsPending" class="ajax-event">
+            <span class="glyphicon {{ e.glyphicon }}"></span>
+            <button ng-if="e.failed" ng-click="e.remove()" class="btn btn-xs btn-danger pull-right"><span class="glyphicon glyphicon-remove"></span></button>
+            <h1>{{ e.name }}</h1>
+            <h2 ng-if="e.args">{{ e.args }}</h2>
+            <h2 ng-if="e.error">{{ e.error }}</h2>
+          </li>
+        </ul>
+      </div>
+      -->
+    </div>
   </body>
 </html>
