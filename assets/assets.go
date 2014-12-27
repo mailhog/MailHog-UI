@@ -1774,12 +1774,12 @@ var _bintree = &_bintree_t{nil, map[string]*_bintree_t{
 			"hog.png":         &_bintree_t{assets_images_hog_png, map[string]*_bintree_t{}},
 		}},
 		"js": &_bintree_t{nil, map[string]*_bintree_t{
-			"controllers.js": &_bintree_t{assets_js_controllers_js, map[string]*_bintree_t{}},
 			"strutil.js":     &_bintree_t{assets_js_strutil_js, map[string]*_bintree_t{}},
+			"controllers.js": &_bintree_t{assets_js_controllers_js, map[string]*_bintree_t{}},
 		}},
 		"templates": &_bintree_t{nil, map[string]*_bintree_t{
-			"layout.html": &_bintree_t{assets_templates_layout_html, map[string]*_bintree_t{}},
 			"index.html":  &_bintree_t{assets_templates_index_html, map[string]*_bintree_t{}},
+			"layout.html": &_bintree_t{assets_templates_layout_html, map[string]*_bintree_t{}},
 		}},
 	}},
 }}
