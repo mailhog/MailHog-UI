@@ -115,6 +115,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
 
   $scope.resizePreview = function() {
     $('.tab-content').height($(window).innerHeight() - $('.tab-content').offset().top);
+    $('.tab-content .tab-pane').height($(window).innerHeight() - $('.tab-content').offset().top);
   }
 
   $scope.getDisplayName = function(value) {
