@@ -128,35 +128,57 @@
         <h4 class="modal-title">Release message</h4>
       </div>
       <div class="modal-body">
-        <p>To release this message, enter a recipient and SMTP server address:</p>
+        <p>To release this message, select an SMTP server or enter custom settings:</p>
         <form role="form">
+          <div class="form-group">
+            <select ng-model="selectedOutgoingSMTP" id="release-message-outgoing" class="form-control">
+              <option value="{{ s.Name }}" ng-repeat="s in outgoingSMTP">{{ s.Name }}</option>
+              <option value="">Use custom settings</option>
+            </select>
+          </div>
+          <div ng-if="selectedOutgoingSMTP == ''">
+            <div class="form-group">
+              <div class="checkbox">
+                <label for="release-message-save">
+                  <input ng-model="saveSMTPServer" type="checkbox" id="release-message-save">
+                  Save these settings
+                </label>
+              </div>
+            </div>
+            <div class="form-group" ng-if="saveSMTPServer">
+              <label for="release-message-server-name">Server name</label>
+              <input type="text" autofocus class="form-control" id="release-message-server-name">
+            </div>
+          </div>
           <div class="form-group">
             <label for="release-message-email">Email address</label>
             <input type="email" autofocus class="form-control" id="release-message-email" placeholder="someone@example.com">
           </div>
-          <div class="form-group">
-            <label for="release-message-smtp-host">SMTP server</label>
-            <input type="text" class="form-control" id="release-message-smtp-host" placeholder="mail.example.com">
-          </div>
-          <div class="form-group">
-            <label for="release-message-smtp-port">SMTP port</label>
-            <input type="number" class="form-control" id="release-message-smtp-port" value="25">
-          </div>
-          <div class="form-group">
-            <label for="release-message-smtp-username">Authentication</label>
-            <select ng-model="smtpmech" id="release-message-smtp-mechanism" class="form-control">
-              <option selected value="NONE">None</option>
-              <option value="PLAIN">PLAIN</option>
-              <option value="CRAMMD5">CRAM-MD5</option>
-            </select>
-          </div>
-          <div class="form-group" ng-if="smtpmech != 'NONE'">
-            <label for="release-message-smtp-username">Username</label>
-            <input type="text" class="form-control" id="release-message-smtp-username" value="">
-          </div>
-          <div class="form-group" ng-if="smtpmech != 'NONE'">
-            <label for="release-message-smtp-password">{{ smtpmech == 'CRAMMD5' ? "Secret" : "Password" }}</label>
-            <input type="password" class="form-control" id="release-message-smtp-password" value="">
+          <div ng-if="selectedOutgoingSMTP == ''">
+            <div class="form-group">
+              <label for="release-message-smtp-host">SMTP server</label>
+              <input type="text" class="form-control" id="release-message-smtp-host" placeholder="mail.example.com">
+            </div>
+            <div class="form-group">
+              <label for="release-message-smtp-port">SMTP port</label>
+              <input type="number" class="form-control" id="release-message-smtp-port" value="25">
+            </div>
+            <div class="form-group">
+              <label for="release-message-smtp-username">Authentication</label>
+              <select ng-model="smtpmech" id="release-message-smtp-mechanism" class="form-control">
+                <option selected value="NONE">None</option>
+                <option value="PLAIN">PLAIN</option>
+                <option value="CRAMMD5">CRAM-MD5</option>
+              </select>
+            </div>
+            <div class="form-group" ng-if="smtpmech != 'NONE'">
+              <label for="release-message-smtp-username">Username</label>
+              <input type="text" class="form-control" id="release-message-smtp-username" value="">
+            </div>
+            <div class="form-group" ng-if="smtpmech != 'NONE'">
+              <label for="release-message-smtp-password">{{ smtpmech == 'CRAMMD5' ? "Secret" : "Password" }}</label>
+              <input type="password" class="form-control" id="release-message-smtp-password" value="">
+            </div>
           </div>
         </form>
       </div>

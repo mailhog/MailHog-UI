@@ -51,6 +51,8 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   $scope.jim = null
 
   $scope.smtpmech = "NONE"
+  $scope.selectedOutgoingSMTP = ""
+  $scope.saveSMTPServer = false;
 
   $scope.getJim = function() {
     var url = $scope.host + '/api/v2/jim'
@@ -393,7 +395,11 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
 
   $scope.releaseOne = function(message) {
     $scope.releasing = message;
-    $('#release-one').modal('show');
+
+    $http.get($scope.host + '/api/v2/outgoing-smtp').success(function(data) {
+      $scope.outgoingSMTP = data;
+      $('#release-one').modal('show');
+    })
   }
   $scope.confirmReleaseMessage = function() {
     $('#release-one').modal('hide');
@@ -402,14 +408,25 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
 
     var e = $scope.startEvent("Releasing message", message.ID, "glyphicon-share");
 
-    $http.post($scope.host + '/api/v1/messages/' + message.ID + '/release', {
-      email: $('#release-message-email').val(),
-      host: $('#release-message-smtp-host').val(),
-      port: $('#release-message-smtp-port').val(),
-      mechanism: $('#release-message-smtp-mechanism').val(),
-      username: $('#release-message-smtp-username').val(),
-      password: $('#release-message-smtp-password').val()
-    }).success(function() {
+    if($('#release-message-outgoing').val().length > 0) {
+      authcfg = {
+        name: $('#release-message-outgoing').val(),
+        email: $('#release-message-email').val(),
+      }
+    } else {
+      authcfg = {
+        email: $('#release-message-email').val(),
+        host: $('#release-message-smtp-host').val(),
+        port: $('#release-message-smtp-port').val(),
+        mechanism: $('#release-message-smtp-mechanism').val(),
+        username: $('#release-message-smtp-username').val(),
+        password: $('#release-message-smtp-password').val(),
+        save: $('#release-message-save').is(":checked") ? true : false,
+        name: $('#release-message-server-name').val(),
+      }
+    }
+
+    $http.post($scope.host + '/api/v1/messages/' + message.ID + '/release', authcfg).success(function() {
       e.done();
     }).error(function(err) {
       e.fail();
