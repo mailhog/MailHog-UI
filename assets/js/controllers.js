@@ -50,6 +50,8 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
 
   $scope.jim = null
 
+  $scope.smtpmech = "NONE"
+
   $scope.getJim = function() {
     var url = $scope.host + '/api/v2/jim'
     $http.get(url).success(function(data) {
@@ -404,6 +406,9 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
       email: $('#release-message-email').val(),
       host: $('#release-message-smtp-host').val(),
       port: $('#release-message-smtp-port').val(),
+      mechanism: $('#release-message-smtp-mechanism').val(),
+      username: $('#release-message-smtp-username').val(),
+      password: $('#release-message-smtp-password').val()
     }).success(function() {
       e.done();
     }).error(function(err) {

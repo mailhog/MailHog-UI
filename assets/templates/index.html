@@ -142,6 +142,22 @@
             <label for="release-message-smtp-port">SMTP port</label>
             <input type="number" class="form-control" id="release-message-smtp-port" value="25">
           </div>
+          <div class="form-group">
+            <label for="release-message-smtp-username">Authentication</label>
+            <select ng-model="smtpmech" id="release-message-smtp-mechanism" class="form-control">
+              <option selected value="NONE">None</option>
+              <option value="PLAIN">PLAIN</option>
+              <option value="CRAMMD5">CRAM-MD5</option>
+            </select>
+          </div>
+          <div class="form-group" ng-if="smtpmech != 'NONE'">
+            <label for="release-message-smtp-username">Username</label>
+            <input type="text" class="form-control" id="release-message-smtp-username" value="">
+          </div>
+          <div class="form-group" ng-if="smtpmech != 'NONE'">
+            <label for="release-message-smtp-password">{{ smtpmech == 'CRAMMD5' ? "Secret" : "Password" }}</label>
+            <input type="password" class="form-control" id="release-message-smtp-password" value="">
+          </div>
         </form>
       </div>
       <div class="modal-footer">
