@@ -5,13 +5,16 @@ all: deps bindata fmt ui
 ui:
 	go install .
 
-bindata:
+bindata: bindata-deps
 	go-bindata -o assets/assets.go -pkg assets assets/...
+
+bindata-deps:
+	go get github.com/jteeuwen/go-bindata/...
 
 fmt:
 	go fmt ./...
 
-deps:
+deps: bindata-deps
 	#FIXME cleanup this
 	go get github.com/mailhog/http
 	go get github.com/ian-kent/gotcha/gotcha
@@ -19,7 +22,6 @@ deps:
 	go get github.com/ian-kent/envconf
 	go get github.com/ian-kent/goose
 	go get github.com/ian-kent/linkio
-	go get github.com/jteeuwen/go-bindata/...
 	go get labix.org/v2/mgo
 	# added to fix travis issues
 	go get code.google.com/p/go-uuid/uuid
@@ -28,4 +30,4 @@ deps:
 test-deps:
 	go get github.com/smartystreets/goconvey
 
-.PNONY: all ui bindata fmt deps test-deps
+.PNONY: all ui bindata bindata-deps fmt deps test-deps
