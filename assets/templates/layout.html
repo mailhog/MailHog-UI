@@ -198,36 +198,36 @@
         </div>
         <div ng-if="jim" class="jim-config">
           <div class="jim-config-item">
-            <strong>Disconnect chance</strong>
-            <span>{{ jim.DisconnectChance }}</span>
+            <strong>Accept chance</strong>
+            <span>{{ jim.AcceptChance * 100 }}%</span>
           </div>
           <div class="jim-config-item">
-            <strong>Accept chance</strong>
-            <span>{{ jim.AcceptChance }}</span>
+            <strong>Disconnect chance</strong>
+            <span>{{ jim.DisconnectChance * 100 }}%</span>
           </div>
           <div class="jim-config-item">
             <strong>Link speed affect chance</strong>
-            <span>{{ jim.LinkSpeedAffect }}</span>
+            <span>{{ jim.LinkSpeedAffect * 100}}%</span>
           </div>
           <div class="jim-config-item">
             <strong>Link speed minimum</strong>
-            <span>{{ jim.LinkSpeedMin }}</span>
+            <span>{{ jim.LinkSpeedMin }}kbps</span>
           </div>
           <div class="jim-config-item">
             <strong>Link speed maximum</strong>
-            <span>{{ jim.LinkSpeedMax }}</span>
+            <span>{{ jim.LinkSpeedMax }}kbps</span>
           </div>
           <div class="jim-config-item">
             <strong>Reject sender chance</strong>
-            <span>{{ jim.RejectSenderChance }}</span>
+            <span>{{ jim.RejectSenderChance * 100 }}%</span>
           </div>
           <div class="jim-config-item">
             <strong>Reject recipient chance</strong>
-            <span>{{ jim.RejectRecipientChance }}</span>
+            <span>{{ jim.RejectRecipientChance * 100 }}%</span>
           </div>
           <div class="jim-config-item">
             <strong>Reject auth chance</strong>
-            <span>{{ jim.RejectAuthChance }}</span>
+            <span>{{ jim.RejectAuthChance * 100 }}%</span>
           </div>
         </div>
         <div ng-if="!jim">
