@@ -127,6 +127,16 @@
       .full-height {
         height: 100%;
       }
+
+      .jim-config {
+        margin-top: 3px;
+        padding: 5px;
+        font-size: 0.9em;
+      }
+
+      .jim-config .jim-config-item {
+        margin-bottom: 2px;
+      }
     </style>
   </head>
   <body ng-controller="MailCtrl" ng-click="keepopen=false">
@@ -176,6 +186,53 @@
         </div>
         <div class="sidebar-item">
           <a href="#" ng-click="deleteAll()"><span class="glyphicon glyphicon-remove-circle"></span> Delete all messages</a>
+        </div>
+
+        <h3>Jim</h3>
+        <p>
+          Jim is a chaos monkey. <a href="https://github.com/mailhog/MailHog/blob/master/docs/JIM.md" target="_blank">Find out more at GitHub</a>.
+        </p>
+        <div ng-if="jim">
+          Jim is <strong>enabled</strong>.
+          <a href="#" ng-click="disableJim()">Disable him</a>.
+        </div>
+        <div ng-if="jim" class="jim-config">
+          <div class="jim-config-item">
+            <strong>Disconnect chance</strong>
+            <span>{{ jim.DisconnectChance }}</span>
+          </div>
+          <div class="jim-config-item">
+            <strong>Accept chance</strong>
+            <span>{{ jim.AcceptChance }}</span>
+          </div>
+          <div class="jim-config-item">
+            <strong>Link speed affect chance</strong>
+            <span>{{ jim.LinkSpeedAffect }}</span>
+          </div>
+          <div class="jim-config-item">
+            <strong>Link speed minimum</strong>
+            <span>{{ jim.LinkSpeedMin }}</span>
+          </div>
+          <div class="jim-config-item">
+            <strong>Link speed maximum</strong>
+            <span>{{ jim.LinkSpeedMax }}</span>
+          </div>
+          <div class="jim-config-item">
+            <strong>Reject sender chance</strong>
+            <span>{{ jim.RejectSenderChance }}</span>
+          </div>
+          <div class="jim-config-item">
+            <strong>Reject recipient chance</strong>
+            <span>{{ jim.RejectRecipientChance }}</span>
+          </div>
+          <div class="jim-config-item">
+            <strong>Reject auth chance</strong>
+            <span>{{ jim.RejectAuthChance }}</span>
+          </div>
+        </div>
+        <div ng-if="!jim">
+          Jim is <strong>disabled</strong>.
+          <a href="#" ng-click="enableJim()">Enable him</a>.
         </div>
       </div>
       <div class="col-md-10 full-height">

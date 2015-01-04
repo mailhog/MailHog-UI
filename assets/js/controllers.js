@@ -48,6 +48,31 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   $scope.countSearchMessages = 0
   $scope.totalSearchMessages = 0
 
+  $scope.jim = null
+
+  $scope.getJim = function() {
+    var url = $scope.host + '/api/v2/jim'
+    $http.get(url).success(function(data) {
+      $scope.jim = data
+    }).error(function() {
+      $scope.jim = null
+    })
+  }
+  $scope.getJim()
+
+  $scope.enableJim = function() {
+    var url = $scope.host + '/api/v2/jim'
+    $http.post(url).success(function(data) {
+      $scope.getJim()
+    })
+  }
+  $scope.disableJim = function() {
+    var url = $scope.host + '/api/v2/jim'
+    $http.delete(url).success(function(data) {
+      $scope.getJim()
+    })
+  }
+
   $(function() {
     $scope.openStream();
   });
