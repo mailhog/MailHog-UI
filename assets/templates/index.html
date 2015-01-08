@@ -71,7 +71,15 @@
   }
 </style>
 <script>
+  function endsWith(str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+  }
+
   var apiHost = "[: .APIHost :]";
+  if(apiHost.length > 0 && !endsWith(apiHost, "/")) {
+    apiHost += "/";
+  }
+
   var columns = [15,15,40,20,10];
   //var reflow = function() {
   //  var remaining = 0;
@@ -274,7 +282,7 @@
   <button class="btn btn-default" ng-click="backToInbox()" title="Back to Inbox"><span class="glyphicon glyphicon-arrow-left"></span></button>
   <div class="spacer"></div>
   <button class="btn btn-default" ng-click="deleteOne(preview); preview = null"><span class="glyphicon glyphicon-trash"></span></button>
-  <a class="btn btn-default" title="Download" href="{{ host }}/api/v1/messages/{{ preview.ID }}/download"><span class="glyphicon glyphicon-save"></span></a>
+  <a class="btn btn-default" title="Download" href="{{ host }}api/v1/messages/{{ preview.ID }}/download"><span class="glyphicon glyphicon-save"></span></a>
   <button class="btn btn-default" title="Release" ng-click="releaseOne(preview)"><span class="glyphicon glyphicon-share"></span></button>
 </div>
 <div class="preview" ng-if="preview">
@@ -321,7 +329,7 @@
       <div class="tab-pane" id="preview-source">{{ getSource(preview) }}</div>
       <div class="tab-pane" id="preview-mime">
         <div ng-repeat="part in preview.MIME.Parts" class="mime-part">
-          <a href="{{ host }}/api/v1/messages/{{ preview.ID }}/mime/part/{{ $index }}/download" type="button" class="btn btn-default btn-sm">
+          <a href="{{ host }}api/v1/messages/{{ preview.ID }}/mime/part/{{ $index }}/download" type="button" class="btn btn-default btn-sm">
             <span class="glyphicon glyphicon-save"></span>
             Download
           </a>

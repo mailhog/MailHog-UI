@@ -55,7 +55,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   $scope.saveSMTPServer = false;
 
   $scope.getJim = function() {
-    var url = $scope.host + '/api/v2/jim'
+    var url = $scope.host + 'api/v2/jim'
     $http.get(url).success(function(data) {
       $scope.jim = data
     }).error(function() {
@@ -65,13 +65,13 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   $scope.getJim()
 
   $scope.enableJim = function() {
-    var url = $scope.host + '/api/v2/jim'
+    var url = $scope.host + 'api/v2/jim'
     $http.post(url).success(function(data) {
       $scope.getJim()
     })
   }
   $scope.disableJim = function() {
-    var url = $scope.host + '/api/v2/jim'
+    var url = $scope.host + 'api/v2/jim'
     $http.delete(url).success(function(data) {
       $scope.getJim()
     })
@@ -101,7 +101,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
     $scope.source == null ? $scope.openStream() : $scope.closeStream();
   }
   $scope.openStream = function() {
-    $scope.source = new EventSource($scope.host + '/api/v1/events');
+    $scope.source = new EventSource($scope.host + 'api/v1/events');
     $scope.source.addEventListener('message', function(e) {
       $scope.$apply(function() {
         $scope.totalMessages++;
@@ -223,7 +223,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
       return $scope.refreshSearch();
     }
     var e = $scope.startEvent("Loading messages", null, "glyphicon-download");
-    var url = $scope.host + '/api/v2/messages'
+    var url = $scope.host + 'api/v2/messages'
     if($scope.startIndex > 0) {
       url += "?start=" + $scope.startIndex;
     }
@@ -262,7 +262,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   }
 
   $scope.refreshSearch = function() {
-    var url = $scope.host + '/api/v2/search?kind=' + $scope.searchKind + '&query=' + $scope.searchedText;
+    var url = $scope.host + 'api/v2/search?kind=' + $scope.searchKind + '&query=' + $scope.searchedText;
     if($scope.startIndex > 0) {
       url += "&start=" + $scope.startIndex;
     }
@@ -288,7 +288,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   	} else {
   		$scope.preview = message;
       var e = $scope.startEvent("Loading message", message.ID, "glyphicon-download-alt");
-	  	$http.get($scope.host + '/api/v1/messages/' + message.ID).success(function(data) {
+	  	$http.get($scope.host + 'api/v1/messages/' + message.ID).success(function(data) {
 	  	  $scope.cache[message.ID] = data;
 	      data.previewHTML = $sce.trustAsHtml($scope.getMessageHTML(data));
   		  $scope.preview = data;
@@ -396,7 +396,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   $scope.releaseOne = function(message) {
     $scope.releasing = message;
 
-    $http.get($scope.host + '/api/v2/outgoing-smtp').success(function(data) {
+    $http.get($scope.host + 'api/v2/outgoing-smtp').success(function(data) {
       $scope.outgoingSMTP = data;
       $('#release-one').modal('show');
     })
@@ -426,7 +426,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
       }
     }
 
-    $http.post($scope.host + '/api/v1/messages/' + message.ID + '/release', authcfg).success(function() {
+    $http.post($scope.host + 'api/v1/messages/' + message.ID + '/release', authcfg).success(function() {
       e.done();
     }).error(function(err) {
       e.fail();
@@ -447,7 +447,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   $scope.deleteAllConfirm = function() {
   	$('#confirm-delete-all').modal('hide');
     var e = $scope.startEvent("Deleting all messages", null, "glyphicon-remove-circle");
-  	$http.delete($scope.host + '/api/v1/messages').success(function() {
+  	$http.delete($scope.host + 'api/v1/messages').success(function() {
   		$scope.refresh();
   		$scope.preview = null;
       e.done()
@@ -456,7 +456,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
 
   $scope.deleteOne = function(message) {
     var e = $scope.startEvent("Deleting message", message.ID, "glyphicon-remove");
-  	$http.delete($scope.host + '/api/v1/messages/' + message.ID).success(function() {
+  	$http.delete($scope.host + 'api/v1/messages/' + message.ID).success(function() {
   		if($scope.preview._id == message._id) $scope.preview = null;
   		$scope.refresh();
       e.done();
