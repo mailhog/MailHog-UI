@@ -2,257 +2,157 @@
 <html ng-app="mailhogApp">
   <head>
     <title>MailHog</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="icon" type="image/png" href="images/hog.png">
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body ng-controller="MailCtrl" ng-click="keepopen=false">
+    <nav class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container-fluid">
+        <div class="col-md-2">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#">
+              <img src="images/hog.png" height="20" alt="MailHog"> MailHog
+            </a>
+          </div>
+        </div>
+
+        <div class="col-md-10">
+          <form class="navbar-form navbar-left" role="search">
+            <div class="form-group left-inner-addon">
+              <i class="glyphicon glyphicon-search"></i>
+
+              <input ng-model="searchText" type="text" ng-key-enter="search('containing', searchText)" class="form-control" autocomplete="off" placeholder="Search" id="search" ng-focus="keepopen=true" ng-click="$event.stopPropagation()">
+
+              <div class="list-group" ng-if="searchText.length > 0 && keepopen">
+                <a href="#" ng-click="search('containing', searchText)" class="list-group-item">
+                  Find messages <strong>containing</strong> {{ searchText }}
+                </a>
+                <a href="#" ng-click="search('to', searchText)" class="list-group-item">
+                  Find messages <strong>to</strong> {{ searchText }}
+                </a>
+                <a href="#" ng-click="search('from', searchText);" class="list-group-item">
+                  Find messages <strong>from</strong> {{ searchText }}
+                </a>
+              </div>
+            </div>
+          </form>
+
+          <ul class="nav navbar-nav navbar-right">
+            <li>
+              <a target="_blank" href="https://github.com/mailhog/MailHog">
+                <img src="images/github.png" height="16" alt="GitHub"> GitHub
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-2">
+          <ul class="nav nav-pills nav-stacked">
+            <li>
+              <a href="#" title="Event stream connected" ng-click="toggleStream()">
+                <span class="glyphicon glyphicon-off {{ hasEventSource ? 'has-event-source' : 'no-event-source' }}"></span>
+                {{ hasEventSource ? 'Connected' : 'Disconnected' }}
+              </a>
+            </li>
+
+            <li>
+              <a href="#" ng-click="backToInboxFirst()">
+                Inbox ({{totalMessages}})
+              </a>
+            </li>
+
+            <li>
+              <a href="#" ng-click="deleteAll()">
+                <span class="glyphicon glyphicon-remove-circle"></span>
+                Delete all messages
+              </a>
+            </li>
+          </ul>
+
+          <div class="well jim-well">
+            <h3>Jim</h3>
+            <p>
+              Jim is a chaos monkey.<br>
+              <a href="https://github.com/mailhog/MailHog/blob/master/docs/JIM.md" target="_blank">Find out more at GitHub</a>.
+            </p>
+            <div ng-if="jim">
+              <a href="#" ng-click="disableJim()" class="btn btn-xs btn-danger">Disable Jim</a>
+            </div>
+            <div ng-if="jim" class="jim-config">
+              <div class="jim-config-item">
+                <strong>Accept chance</strong>
+                <span>{{ jim.AcceptChance * 100 }}%</span>
+              </div>
+              <div class="jim-config-item">
+                <strong>Disconnect chance</strong>
+                <span>{{ jim.DisconnectChance * 100 }}%</span>
+              </div>
+              <div class="jim-config-item">
+                <strong>Link speed affect chance</strong>
+                <span>{{ jim.LinkSpeedAffect * 100}}%</span>
+              </div>
+              <div class="jim-config-item">
+                <strong>Link speed minimum</strong>
+                <span>{{ jim.LinkSpeedMin }}kbps</span>
+              </div>
+              <div class="jim-config-item">
+                <strong>Link speed maximum</strong>
+                <span>{{ jim.LinkSpeedMax }}kbps</span>
+              </div>
+              <div class="jim-config-item">
+                <strong>Reject sender chance</strong>
+                <span>{{ jim.RejectSenderChance * 100 }}%</span>
+              </div>
+              <div class="jim-config-item">
+                <strong>Reject recipient chance</strong>
+                <span>{{ jim.RejectRecipientChance * 100 }}%</span>
+              </div>
+              <div class="jim-config-item">
+                <strong>Reject auth chance</strong>
+                <span>{{ jim.RejectAuthChance * 100 }}%</span>
+              </div>
+            </div>
+            <div ng-if="!jim">
+              <a href="#" ng-click="enableJim()" class="btn btn-xs btn-default">Enable Jim</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-10 content">
+          [: .Content :]
+        </div>
+      </div>
+    </div>
+
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="//code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.8/angular.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.js"></script>
     <script src="js/strutil.js"></script>
     <script src="js/controllers.js"></script>
-    <style>
-      body, html { height: 100%; overflow: hidden; }
-      .navbar {
-        margin-bottom: 0;
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 100%;
-        border-bottom: 1px solid #ccc;
-        background: #ccc;
-      }
-      .navbar-header img {
-        height: 35px;
-        margin: 8px 0 0 5px;
-        float: left;
-      }
-      .pad-top {
-        padding-top: 51px;
-      }
-      .navbar-nav.navbar-right:last-child {
-        margin-right: 0; /* bootstrap fix?! */
-      }
-      .ajax-loader {
-        background: url('images/ajax-loader.gif');
-        width: 16px;
-        height: 16px;
-        display: inline-block;
-      }
-      .ajax-event-ul {
-        margin: 0;
-        padding: 0;
-      }
-      .ajax-event {
-      }
-      .ajax-event h1 {
-        font-size: 1em;
-        padding: 2px;
-        margin: 0;
-      }
-      .ajax-event h2 {
-        font-size: 0.8em;
-        padding: 2px;
-        margin: 0;
-      }
-      .ajax-event .glyphicon {
-        float: left;
-        padding: 1px;
-        color: #666;
+    <script>
+      function endsWith(str, suffix) {
+        return str.indexOf(suffix, str.length - suffix.length) !== -1;
       }
 
-      .dropdown-menu .glyphicon {
-        padding: 1px;
-        margin-right: 5px;
-        color: #666;
-      }
-      .dropdown-menu > li > a {
-        padding: 3px 10px;
+      var apiHost = "[: .APIHost :]";
+      if(apiHost.length > 0 && !endsWith(apiHost, "/")) {
+        apiHost += "/";
       }
 
-      /* http://stackoverflow.com/questions/18838964/add-bootstrap-glyphicon-to-input-box */
-      .left-inner-addon {
-          position: relative;
-      }
-      .left-inner-addon input {
-          padding-left: 30px;
-      }
-      .left-inner-addon i {
-          color: #aaa;
-          position: absolute;
-          padding: 9px 10px;
-          pointer-events: none;
-      }
-      .ev_good {
-        color: green;
-      }
-      .ev_bad {
-        color: red;
-      }
-
-      #search {
-        width: 500px;
-      }
-
-      .sidebar-item {
-        padding: 5px;
-      }
-
-      .wrapper {
-        position: absolute;
-        top: 96px;
-        left: 0;
-        right: 0;
-        bottom: 0;
-      }
-      .wrapper2 {
-        position: absolute;
-        top: 51px;
-        left: 0;
-        right: 0;
-        bottom: 0;
-      }
-      .inner {
-        overflow-y: scroll;
-        height: 100%;
-      }
-      .inner > :last-child {
-        margin-bottom: 15px;
-      }
-      .row.no-margin {
-        margin-left: 0;
-        margin-right: 0;
-      }
-      .full-height {
-        height: 100%;
-      }
-
-      .jim-config {
-        margin-top: 3px;
-        padding: 5px;
-        font-size: 0.9em;
-      }
-
-      .jim-config .jim-config-item {
-        margin-bottom: 2px;
-      }
-    </style>
-  </head>
-  <body ng-controller="MailCtrl" ng-click="keepopen=false">
-    <div class="row no-margin">
-      <div class="col-md-2">
-        <nav class="navbar navbar-default navbar-static-top" role="navigation">
-          <div class="navbar-header">
-            <img src="images/hog.png">
-            <a class="navbar-brand" href="#">MailHog</a>
-          </div>
-        </nav>
-      </div>
-      <div class="col-md-10">
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="height: 51px;">
-          <ul class="nav navbar-nav">
-            <li>
-              <form class="navbar-form navbar-left" role="search">
-                <div class="form-group left-inner-addon">
-                  <i class="glyphicon glyphicon-search"></i>
-                  <input ng-model="searchText" type="text" ng-key-enter="search('containing', searchText)" class="form-control" autocomplete="off" placeholder="Search" id="search" ng-focus="keepopen=true" ng-click="$event.stopPropagation()">
-                  <div class="list-group" ng-if="searchText.length > 0 && keepopen">
-                    <a href="#" ng-click="search('containing', searchText)" class="list-group-item"><span style="margin-right: 8px; color: #999" class="glyphicon glyphicon-search"></span> Find messages <strong>containing</strong> {{ searchText }}</a>
-                    <a href="#" ng-click="search('to', searchText)" class="list-group-item"><span style="margin-right: 8px; color: #999" class="glyphicon glyphicon-search"></span> Find messages <strong>to</strong> {{ searchText }}</a>
-                    <a href="#" ng-click="search('from', searchText);" class="list-group-item"><span style="margin-right: 8px; color: #999" class="glyphicon glyphicon-search"></span> Find messages <strong>from</strong> {{ searchText }}</a>
-                  </div>
-                </div>
-              </form>
-            </li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li><a target="_blank" href="https://github.com/mailhog/MailHog"><img src="images/github.png" style="width: 16px;" /> GitHub</a></li>
-          </ul>
-        </nav>
-      </div>
-    </div>
-
-    <div class="row no-margin wrapper2">
-      <div class="col-md-2">
-        <div class="sidebar-item" style="margin-top: 10px;">
-          <span class="glyphicon glyphicon-off {{ hasEventSource ? 'ev_good' : 'ev_bad' }}"></span>
-          <a href="#" title="Event stream connected" ng-click="toggleStream()">
-            {{ hasEventSource ? 'Connected' : 'Disconnected' }}
-          </a>
-        </div>
-        <div class="sidebar-item">
-          <a href="#" ng-click="backToInboxFirst()">Inbox ({{totalMessages}})</a>
-        </div>
-        <div class="sidebar-item">
-          <a href="#" ng-click="deleteAll()"><span class="glyphicon glyphicon-remove-circle"></span> Delete all messages</a>
-        </div>
-
-        <h3>Jim</h3>
-        <p>
-          Jim is a chaos monkey. <a href="https://github.com/mailhog/MailHog/blob/master/docs/JIM.md" target="_blank">Find out more at GitHub</a>.
-        </p>
-        <div ng-if="jim">
-          Jim is <strong>enabled</strong>.
-          <a href="#" ng-click="disableJim()">Disable him</a>.
-        </div>
-        <div ng-if="jim" class="jim-config">
-          <div class="jim-config-item">
-            <strong>Accept chance</strong>
-            <span>{{ jim.AcceptChance * 100 }}%</span>
-          </div>
-          <div class="jim-config-item">
-            <strong>Disconnect chance</strong>
-            <span>{{ jim.DisconnectChance * 100 }}%</span>
-          </div>
-          <div class="jim-config-item">
-            <strong>Link speed affect chance</strong>
-            <span>{{ jim.LinkSpeedAffect * 100}}%</span>
-          </div>
-          <div class="jim-config-item">
-            <strong>Link speed minimum</strong>
-            <span>{{ jim.LinkSpeedMin }}kbps</span>
-          </div>
-          <div class="jim-config-item">
-            <strong>Link speed maximum</strong>
-            <span>{{ jim.LinkSpeedMax }}kbps</span>
-          </div>
-          <div class="jim-config-item">
-            <strong>Reject sender chance</strong>
-            <span>{{ jim.RejectSenderChance * 100 }}%</span>
-          </div>
-          <div class="jim-config-item">
-            <strong>Reject recipient chance</strong>
-            <span>{{ jim.RejectRecipientChance * 100 }}%</span>
-          </div>
-          <div class="jim-config-item">
-            <strong>Reject auth chance</strong>
-            <span>{{ jim.RejectAuthChance * 100 }}%</span>
-          </div>
-        </div>
-        <div ng-if="!jim">
-          Jim is <strong>disabled</strong>.
-          <a href="#" ng-click="enableJim()">Enable him</a>.
-        </div>
-      </div>
-      <div class="col-md-10 full-height">
-        [: .Content :]
-      </div>
-      <!--
-      <div>
-        <span ng-if="eventCount > eventDone" class="ajax-loader"></span>
-        {{ eventCount - eventDone }} pending<span ng-if="eventFailed > 0"> ({{ eventFailed}} failed)</span> <span ng-if="eventDone > 0"> ({{ eventDone}} complete)</span> <b class="caret"></b>
-        <ul class="ajax-event-ul">
-          <li ng-class="e.getClass()" ng-repeat="(id, e) in eventsPending" class="ajax-event">
-            <span class="glyphicon {{ e.glyphicon }}"></span>
-            <button ng-if="e.failed" ng-click="e.remove()" class="btn btn-xs btn-danger pull-right"><span class="glyphicon glyphicon-remove"></span></button>
-            <h1>{{ e.name }}</h1>
-            <h2 ng-if="e.args">{{ e.args }}</h2>
-            <h2 ng-if="e.error">{{ e.error }}</h2>
-          </li>
-        </ul>
-      </div>
-      -->
-    </div>
+      var columns = [15,15,40,20,10];
+    </script>
   </body>
 </html>

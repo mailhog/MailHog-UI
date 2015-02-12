@@ -924,6 +924,8 @@ function isEmptyOrSequenceOfWhiteSpaces(str) {
 // "=?UTF-8?B?*?= =?UTF-8?B?*?=" => ["=?UTF-8?B?*?=", "=?UTF-8?B?*?="]
 // "=?UTF-8?B?*?=FOO" => ["=?UTF-8?B?*?=", "FOO"]
 function splitMimeString(str) {
+  if(!str) { return []; }
+
   var parts = [];
   var current = "";
   while (str != "") {

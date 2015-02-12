@@ -148,7 +148,10 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   }
 
   $scope.getDisplayName = function(value) {
+    if(!value) { return ""; }
+
     res = value.match(/(.*)\<(.*)\>/);
+
     if(res) {
       if(res[1].trim().length > 0) {
         return res[1].trim();

@@ -25,6 +25,7 @@ func CreateWeb(cfg *config.Config, app *gotcha.App) *Web {
 	r := app.Router
 
 	r.Get("/images/(?P<file>.*)", r.Static("assets/images/{{file}}"))
+	r.Get("/css/(?P<file>.*)", r.Static("assets/css/{{file}}"))
 	r.Get("/js/(?P<file>.*)", r.Static("assets/js/{{file}}"))
 	r.Get("/", Index)
 
@@ -38,10 +39,10 @@ func CreateWeb(cfg *config.Config, app *gotcha.App) *Web {
 }
 
 func Index(session *http.Session) {
-	session.Stash["APIHost"] = APIHost
 	html, _ := session.RenderTemplate("index.html")
 
 	session.Stash["Page"] = "Browse"
 	session.Stash["Content"] = template.HTML(html)
+	session.Stash["APIHost"] = APIHost
 	session.Render("layout.html")
 }

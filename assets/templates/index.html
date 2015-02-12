@@ -1,115 +1,197 @@
-<style>
-  .preview #headers {
-    border-bottom: 1px solid #DDDDDD;
-  }
-  .selected {
-    background: #0066CC;
-    color: #fff;
-  }
-  table td, table th {
-    padding: 2px 4px 2px 8px !important;
-  }
-  table thead {
-    background: #eee;
-  }
-  table th:not(:last-child) {
-    /*border-right: 2px solid #DDD;*/
-  }
-  table th, table td {
-    vertical-align: top;
-  }
-  #content .nav>li>a {
-    padding: 5px 8px;
-  }
-  .preview #headers tbody td {
-    width: 100%;
-  }
-  .preview #headers tbody th {
-    white-space: nowrap;
-    padding-right: 10px !important;
-    padding-left: 10px !important;
-    text-align: right;
-    color: #666;
-    font-weight: normal;
-  }
-  #preview-plain, #preview-source {
-    white-space: pre;
-    font-family: Courier New, Courier, System, fixed-width;
-  }
-  .preview .tab-content {
-    padding: 0;
-    overflow-y: scroll;
-  }
-  .mime-part {
-    padding: 10px;
-  }
-  .ui-resizable-handle.ui-resizable-s {
-    background: #aaa;
-    border-bottom: 1px solid #ccc;
-  }
+<div class="toolbar" ng-if="!preview && !searching">
+  <button class="btn btn-default" ng-click="refresh()" title="Refresh">
+    <i class="glyphicon glyphicon-refresh"></i>
+  </button>
 
-  .toolbar {
-    border-bottom: 1px solid #ccc;
-  }
-  .msglist-message {
-    border-bottom: 1px solid #ccc;
-    padding: 7px 0;
-    display: block;
-    cursor: pointer;
-  }
-  .msglist-message .subject.unread {
-    color: #666;
-    font-weight: bold;
-  }
-  .toolbar .btn {
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-  .toolbar .spacer {
-    display: inline-block;
-    width: 20px;
-  }
-</style>
-<script>
-  function endsWith(str, suffix) {
-    return str.indexOf(suffix, str.length - suffix.length) !== -1;
-  }
+  <span class="pull-right">
+    <span class="message-count" ng-if="(totalMessages || 0) != 0">
+      <strong>{{ startMessages + 1 }}-{{ startMessages + countMessages }}</strong>
+      of
+      <strong>{{ totalMessages }}</strong>
+    </span>
 
-  var apiHost = "[: .APIHost :]";
-  if(apiHost.length > 0 && !endsWith(apiHost, "/")) {
-    apiHost += "/";
-  }
+    <button class="btn btn-default" ng-click="showNewer()" title="Newer" ng-class="{'disabled':startMessages<=0}">
+      <i class="glyphicon glyphicon-chevron-left"></i>
+    </button>
 
-  var columns = [15,15,40,20,10];
-  //var reflow = function() {
-  //  var remaining = 0;
-  //  if($('.preview').length > 0) {
-  //    remaining = $(window).height() - $('.preview .nav-tabs').offset().top
-  //  } else {
-  //    remaining = $('#messages-container').offset().top + $('#messages-container').height();
-  //  }
-  //  remaining -= $('.resize_bar').height();
-  //  $('.preview .tab-content').height(remaining - 32)
-  //  $('#messages-container table').height($('#messages-container').height())
-  //  $('#messages-container table tbody').height($('#messages-container').height() - $('#messages-container table thead').height())
+    <button class="btn btn-default" ng-click="showOlder()" title="Older" ng-class="{'disabled':startMessages+countMessages>=totalMessages}">
+      <i class="glyphicon glyphicon-chevron-right"></i>
+    </button>
+  </span>
+</div>
 
-  //  var $table = $('#messages-container table');
-  //  var colWidth = [];
-  //  for(var i in columns) {
-  //    colWidth[i] = $table.innerWidth() / 100 * columns[i];
-  //  }
+<div class="messages container-fluid" ng-if="!preview && !searching">
+  <div class="msglist-message row" ng-repeat="message in messages" ng-click="selectMessage(message)">
+    <div class="col-md-3">
+      {{ tryDecodeMime(getDisplayName(message.Content.Headers["From"][0]) || message.From.Mailbox + "@" + message.From.Domain) }}
 
-  //  $table.find('thead tr').children().each(function(i, v) { $(v).width(colWidth[i]); });
-  //  $table.find('tbody tr:first').children().each(function(i, v) { $(v).width(colWidth[i]); });
-  //}
-  //$(function() {
-  //  $(".messages").resizable({"handles":"s"});
-  //  reflow();
-  //  $(window).resize(function() {
-  //      reflow();
-  //  }).resize();
-  //})
-</script>
+      <div ng-if="message.Content.Headers['To']">
+        <div ng-repeat="to in message.Content.Headers['To']" style="color: #777">
+          {{ getDisplayName(tryDecodeMime(to)) }}
+        </div>
+      </div>
+
+      <div ng-if="!message.Content.Headers['To']">
+        <div ng-repeat="to in message.To" style="color: #777">
+          {{ to.Mailbox }}@{{ to.Domain }}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <span class="subject unread">{{ tryDecodeMime(message.Content.Headers["Subject"][0]) }}</span>
+    </div>
+
+    <div class="col-md-3 col-md-offset-3 text-right">
+      {{ getMoment(date(message.Created)).fromNow() }}
+    </div>
+  </div>
+</div>
+
+<div class="toolbar" ng-if="searching">
+  <span class="pull-right">
+    <span style="padding-right: 8px">
+      <strong>{{ countSearchMessages > 0 ? startSearchMessages + 1 : 0 }}-{{ (startSearchMessages + countSearchMessages) || 0 }}</strong>
+      of
+      <strong>{{ totalSearchMessages || 0 }}</strong>
+    </span>
+
+    <button class="btn btn-default" ng-click="showNewer()" title="Newer" ng-class="{'disabled':startSearchMessages<=0}">
+      <i class="glyphicon glyphicon-chevron-left"></i>
+    </button>
+
+    <button class="btn btn-default" ng-click="showOlder()" title="Older" ng-class="{'disabled':startSearchMessages+countSearchMessages>=totalSearchMessages}">
+      <i class="glyphicon glyphicon-chevron-right"></i>
+    </button>
+  </span>
+
+  <button class="btn btn-default" ng-click="backToInbox()" title="Back to Inbox">
+    <i class="glyphicon glyphicon-arrow-left"></i>
+  </button>
+  <button class="btn btn-default" ng-click="refresh()" title="Refresh">
+    <i class="glyphicon glyphicon-refresh"></i>
+  </button>
+
+  <div class="spacer"></div>
+
+  <span>Searching for messages <strong>{{searchKind}}</strong> {{ searchedText }}</span>
+</div>
+
+<div class="messages container-fluid" ng-if="searching">
+  <div class="msglist-message row" ng-repeat="message in searchMessages" ng-click="selectMessage(message)">
+    <div class="col-md-3">
+      {{ tryDecodeMime(getDisplayName(message.Content.Headers["From"][0]) || message.From.Mailbox + "@" + message.From.Domain) }}
+
+      <div ng-if="message.Content.Headers['To']">
+        <div ng-repeat="to in message.Content.Headers['To']" style="color: #777">
+          {{ getDisplayName(tryDecodeMime(to)) }}
+        </div>
+      </div>
+
+      <div ng-if="!message.Content.Headers['To']">
+        <div ng-repeat="to in message.To" style="color: #777">
+          {{ to.Mailbox }}@{{ to.Domain }}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <span class="subject unread">{{ tryDecodeMime(message.Content.Headers["Subject"][0]) }}</span>
+    </div>
+
+    <div class="col-md-3 col-md-offset-3 text-right">
+      {{ getMoment(date(message.Created)).fromNow() }}
+    </div>
+  </div>
+</div>
+
+<div class="toolbar" ng-if="preview">
+  <button class="btn btn-default" ng-click="backToInbox()" title="Back to Inbox">
+    <i class="glyphicon glyphicon-arrow-left"></i>
+  </button>
+
+  <div class="spacer"></div>
+
+  <button class="btn btn-default" ng-click="deleteOne(preview); preview = null">
+    <i class="glyphicon glyphicon-trash"></i>
+  </button>
+
+  <a class="btn btn-default" title="Download" href="{{ host }}api/v1/messages/{{ preview.ID }}/download">
+    <i class="glyphicon glyphicon-save"></i>
+  </a>
+
+  <button class="btn btn-default" title="Release" ng-click="releaseOne(preview)">
+    <i class="glyphicon glyphicon-share"></i>
+  </button>
+</div>
+
+<div class="preview" ng-if="preview">
+  <div class="row headers">
+    <div class="col-md-10">
+      <table>
+        <tbody ng-if="!previewAllHeaders">
+          <tr>
+            <th>From</th>
+            <td>{{ tryDecodeMime(preview.Content.Headers["From"][0] || preview.From.Mailbox + "@" + preview.From.Domain) }}</td>
+          </tr>
+          <tr>
+            <th>Subject</th>
+            <td><strong>{{ tryDecodeMime(preview.Content.Headers["Subject"][0]) }}</strong></td>
+          </tr>
+          <tr>
+            <th>To</th>
+            <td>
+              {{ tryDecodeMime((preview.Content.Headers["To"] || []).join(', ') || preview.To[0].Mailbox + "@" + preview.To[0].Domain) }}
+            </td>
+          </tr>
+        </tbody>
+        <tbody ng-if="previewAllHeaders">
+          <tr ng-repeat="(header, value) in preview.Content.Headers">
+            <th>{{ tryDecodeMime(header) }}</th>
+            <td>
+              <div ng-repeat="v in value">{{ v }}</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-2">
+      <button id="hide-headers" ng-if="previewAllHeaders" ng-click="toggleHeaders(false)" type="button" class="btn btn-default pull-right btn-xs">
+        Hide headers <i class="glyphicon glyphicon-chevron-up"></i>
+      </button>
+
+      <button id="show-headers" ng-if="!previewAllHeaders" ng-click="toggleHeaders(true)" type="button" class="btn btn-default pull-right btn-xs">
+        Show headers <i class="glyphicon glyphicon-chevron-down"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="mail-content">
+    <ul class="nav nav-tabs">
+      <li ng-if="hasHTML(preview)" ng-class="{ active: hasHTML(preview) }"><a href="#preview-html" data-toggle="tab">HTML</a></li>
+      <li ng-class="{ active: !hasHTML(preview) }"><a href="#preview-plain" data-toggle="tab">Plain text</a></li>
+      <li><a href="#preview-source" data-toggle="tab">Source</a></li>
+      <li ng-if="preview.MIME"><a href="#preview-mime" data-toggle="tab">MIME</a></li>
+    </ul>
+
+    <div class="tab-content">
+      <iframe ng-if="hasHTML(preview)" ng-class="{ active: hasHTML(preview) }" class="tab-pane" id="preview-html" srcdoc="{{preview.previewHTML}}" seamless frameborder="0" style="width: 100%"></iframe>
+      <div class="tab-pane" ng-class="{ active: !hasHTML(preview) }" id="preview-plain">{{ getMessagePlain(preview) }}</div>
+      <div class="tab-pane" id="preview-source">{{ getSource(preview) }}</div>
+      <div class="tab-pane" id="preview-mime">
+        <div ng-repeat="part in preview.MIME.Parts" class="mime-part">
+          <a href="{{ host }}api/v1/messages/{{ preview.ID }}/mime/part/{{ $index }}/download" type="button" class="btn btn-default btn-sm">
+            <i class="glyphicon glyphicon-save"></i>
+            Download
+          </a>
+          {{ part.Headers["Content-Type"][0] || "Unknown type" }} ({{ part.Size }} bytes)
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modals -->
 <div class="modal fade" id="confirm-delete-all">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -197,145 +279,4 @@
     </div>
   </div>
 </div>
-
-<div class="toolbar" style="padding: 5px;" ng-if="!preview && !searching">
-  <!--
-  <button class="btn btn-default" ng-click="deleteSelection()" ng-class="{hidden:!hasSelection()}"><span class="glyphicon glyphicon-trash"></span></button>
-  <button class="btn btn-default" ng-click="downloadSelection()" ng-class="{hidden:!hasSelection()}" title="Download"><span class="glyphicon glyphicon-save"></span></button>
-  <button class="btn btn-default" ng-click="releaseSelection()" ng-class="{hidden:!hasSelection()}" title="Release"><span class="glyphicon glyphicon-share"></span></button>
-  <div ng-class="{hidden:!hasSelection()}" class="spacer"></div>
--->
-  <button class="btn btn-default" ng-click="refresh()" title="Refresh"><span class="glyphicon glyphicon-refresh"></span></button>
-  <span class="pull-right">
-    <span style="padding-right: 8px"><strong>{{ countMessages > 0 ? startMessages + 1 : 0 }}-{{ (startMessages + countMessages) || 0 }}</strong> of <strong>{{ totalMessages || 0 }}</strong></span>
-    <button class="btn btn-default" ng-click="showNewer()" title="Newer" ng-class="{'disabled':startMessages<=0}"><span class="glyphicon glyphicon-chevron-left"></span></button>
-    <button class="btn btn-default" ng-click="showOlder()" title="Older" ng-class="{'disabled':startMessages+countMessages>=totalMessages}"><span class="glyphicon glyphicon-chevron-right"></span></button>
-  </span>
-</div>
-<div class="messages container-fluid inner" ng-if="!preview && !searching">
-  <div class="msglist-message row" ng-repeat="message in messages" ng-click="selectMessage(message)">
-    <!--<div style="float: left; width: 30px;">
-      <input name="msg-check" type="checkbox" ng-model="message.isChecked" ng-click="$event.stopPropagation();" />
-    </div>-->
-    <div style="float: left; width: 190px; overflow: hidden;">
-      {{ tryDecodeMime(getDisplayName(message.Content.Headers["From"][0]) || message.From.Mailbox + "@" + message.From.Domain) }}
-      <div ng-if="message.Content.Headers['To']">
-        <div ng-repeat="to in message.Content.Headers['To']" style="color: #777">
-          {{ getDisplayName(tryDecodeMime(to)) }}
-        </div>
-      </div>
-      <div ng-if="!message.Content.Headers['To']">
-        <div ng-repeat="to in message.To" style="color: #777">
-          {{ to.Mailbox }}@{{ to.Domain }}
-        </div>
-      </div>
-    </div>
-    <div style="float: right; width: 125px; text-align: right;">
-      {{ getMoment(date(message.Created)).fromNow() }}
-    </div>
-    <div style="margin-right: 135px; margin-left: 210px;">
-      <span class="subject unread">{{ tryDecodeMime(message.Content.Headers["Subject"][0]) }}</span>
-    </div>
-  </div>
-</div>
-
-<div class="toolbar" style="padding: 5px;" ng-if="searching">
-  <span class="pull-right">
-    <span style="padding-right: 8px"><strong>{{ countSearchMessages > 0 ? startSearchMessages + 1 : 0 }}-{{ (startSearchMessages + countSearchMessages) || 0 }}</strong> of <strong>{{ totalSearchMessages || 0 }}</strong></span>
-    <button class="btn btn-default" ng-click="showNewer()" title="Newer" ng-class="{'disabled':startSearchMessages<=0}"><span class="glyphicon glyphicon-chevron-left"></span></button>
-    <button class="btn btn-default" ng-click="showOlder()" title="Older" ng-class="{'disabled':startSearchMessages+countSearchMessages>=totalSearchMessages}"><span class="glyphicon glyphicon-chevron-right"></span></button>
-  </span>
-
-  <button class="btn btn-default" ng-click="backToInbox()" title="Back to Inbox"><span class="glyphicon glyphicon-arrow-left"></span></button>
-  <button class="btn btn-default" ng-click="refresh()" title="Refresh"><span class="glyphicon glyphicon-refresh"></span></button>
-  <div class="spacer"></div>
-  <span>Searching for messages <strong>{{searchKind}}</strong> {{ searchedText }}</span>
-</div>
-<div class="messages container-fluid inner" ng-if="searching">
-  <div class="msglist-message row" ng-repeat="message in searchMessages" ng-click="selectMessage(message)">
-    <!--<div style="float: left; width: 30px;">
-    <input name="msg-check" type="checkbox" ng-model="message.isChecked" ng-click="$event.stopPropagation();" />
-  </div>-->
-  <div style="float: left; width: 190px; overflow: hidden;">
-    {{ tryDecodeMime(getDisplayName(message.Content.Headers["From"][0]) || message.From.Mailbox + "@" + message.From.Domain) }}
-    <div ng-if="message.Content.Headers['To']">
-      <div ng-repeat="to in message.Content.Headers['To']" style="color: #777">
-        {{ getDisplayName(tryDecodeMime(to)) }}
-      </div>
-    </div>
-    <div ng-if="!message.Content.Headers['To']">
-      <div ng-repeat="to in message.To" style="color: #777">
-        {{ to.Mailbox }}@{{ to.Domain }}
-      </div>
-    </div>
-  </div>
-  <div style="float: right; width: 125px; text-align: right;">
-    {{ getMoment(date(message.Created)).fromNow() }}
-  </div>
-  <div style="margin-right: 135px; margin-left: 210px;">
-    <span class="subject unread">{{ tryDecodeMime(message.Content.Headers["Subject"][0]) }}</span>
-  </div>
-</div>
-</div>
-
-<div class="toolbar" style="padding: 5px;" ng-if="preview">
-  <button class="btn btn-default" ng-click="backToInbox()" title="Back to Inbox"><span class="glyphicon glyphicon-arrow-left"></span></button>
-  <div class="spacer"></div>
-  <button class="btn btn-default" ng-click="deleteOne(preview); preview = null"><span class="glyphicon glyphicon-trash"></span></button>
-  <a class="btn btn-default" title="Download" href="{{ host }}api/v1/messages/{{ preview.ID }}/download"><span class="glyphicon glyphicon-save"></span></a>
-  <button class="btn btn-default" title="Release" ng-click="releaseOne(preview)"><span class="glyphicon glyphicon-share"></span></button>
-</div>
-<div class="preview" ng-if="preview">
-  <table id="headers">
-    <tbody ng-if="!previewAllHeaders">
-      <tr>
-        <th>From</th>
-        <td>{{ tryDecodeMime(preview.Content.Headers["From"][0] || preview.From.Mailbox + "@" + preview.From.Domain) }}</td>
-      </tr>
-      <tr>
-        <th>Subject</th>
-        <td><strong>{{ tryDecodeMime(preview.Content.Headers["Subject"][0]) }}</strong></td>
-      </tr>
-      <tr>
-        <th>To</th>
-        <td>
-          <button id="show-headers" ng-click="toggleHeaders(true)" type="button" class="btn btn-default pull-right btn-xs">Show headers <span class="glyphicon glyphicon-chevron-down"></span></button>
-          {{ tryDecodeMime((preview.Content.Headers["To"] || []).join(', ') || preview.To[0].Mailbox + "@" + preview.To[0].Domain) }}
-        </td>
-      </tr>
-    </tbody>
-    <tbody ng-if="previewAllHeaders">
-      <tr ng-repeat="(header, value) in preview.Content.Headers">
-        <th>
-          {{ tryDecodeMime(header) }}
-        </th>
-        <td>
-          <button id="hide-headers" ng-if="$last" ng-click="toggleHeaders(false)" type="button" class="btn btn-default pull-right btn-xs">Hide headers <span class="glyphicon glyphicon-chevron-up"></span></button>
-          <div ng-repeat="v in value">{{ v }}</div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <div id="content">
-    <ul class="nav nav-tabs">
-      <li ng-if="hasHTML(preview)" ng-class="{ active: hasHTML(preview) }"><a href="#preview-html" data-toggle="tab">HTML</a></li>
-      <li ng-class="{ active: !hasHTML(preview) }"><a href="#preview-plain" data-toggle="tab">Plain text</a></li>
-      <li><a href="#preview-source" data-toggle="tab">Source</a></li>
-      <li ng-if="preview.MIME"><a href="#preview-mime" data-toggle="tab">MIME</a></li>
-    </ul>
-    <div class="tab-content">
-      <iframe ng-if="hasHTML(preview)" ng-class="{ active: hasHTML(preview) }" class="tab-pane" id="preview-html" srcdoc="{{preview.previewHTML}}" seamless frameborder="0" style="width: 100%"></iframe>
-      <div class="tab-pane" ng-class="{ active: !hasHTML(preview) }" id="preview-plain">{{ getMessagePlain(preview) }}</div>
-      <div class="tab-pane" id="preview-source">{{ getSource(preview) }}</div>
-      <div class="tab-pane" id="preview-mime">
-        <div ng-repeat="part in preview.MIME.Parts" class="mime-part">
-          <a href="{{ host }}api/v1/messages/{{ preview.ID }}/mime/part/{{ $index }}/download" type="button" class="btn btn-default btn-sm">
-            <span class="glyphicon glyphicon-save"></span>
-            Download
-          </a>
-          {{ part.Headers["Content-Type"][0] || "Unknown type" }} ({{ part.Size }} bytes)
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- End of modals -->
