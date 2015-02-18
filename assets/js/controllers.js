@@ -322,19 +322,30 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
     }, 10);
   }
 
-  $scope.tryDecodeContent = function(message, content) {
+  $scope.tryDecodeContent = function(message) {
     var charset = "UTF-8"
     if(message.Content.Headers["Content-Type"][0]) {
       // TODO
     }
 
-    if(message.Content.Headers["Content-Transfer-Encoding"][0]) {
-      if(message.Content.Headers["Content-Transfer-Encoding"][0] == "quoted-printable") {
-        content = unescapeFromQuotedPrintable(content, charset)
+    var content = message.Content.Body;
+    var contentTransferEncoding = message.Content.Headers["Content-Transfer-Encoding"][0];
+
+    if(contentTransferEncoding) {
+      switch (contentTransferEncoding) {
+        case 'quoted-printable':
+          content = content.replace(/=[\r\n]+/gm,"");
+          content = unescapeFromQuotedPrintable(content, charset);
+          break;
+        case 'base64':
+          // remove line endings to give original base64-encoded string
+          content = content.replace(/\r?\n|\r/gm,"");
+          content = unescapeFromBase64(content, charset);
+          break;
       }
     }
 
-    return content
+    return content;
   }
 
   $scope.getMessagePlain = function(message) {
@@ -390,7 +401,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
 
   $scope.tryDecode = function(l){
     if(l.Headers && l.Headers["Content-Type"] && l.Headers["Content-Transfer-Encoding"]){
-      return $scope.tryDecodeContent({Content:l},l.Body.replace(/=[\r\n]+/gm,""));
+      return $scope.tryDecodeContent({Content:l});
     }else{
       return l.Body;
     }
