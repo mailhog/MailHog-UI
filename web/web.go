@@ -27,6 +27,7 @@ func CreateWeb(cfg *config.Config, app *gotcha.App) *Web {
 	r.Get("/images/(?P<file>.*)", r.Static("assets/images/{{file}}"))
 	r.Get("/css/(?P<file>.*)", r.Static("assets/css/{{file}}"))
 	r.Get("/js/(?P<file>.*)", r.Static("assets/js/{{file}}"))
+	r.Get("/fonts/(?P<file>.*)", r.Static("assets/fonts/{{file}}"))
 	r.Get("/", Index)
 
 	app.Config.LeftDelim = "[:"
