@@ -293,7 +293,31 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
       var e = $scope.startEvent("Loading message", message.ID, "glyphicon-download-alt");
 	  	$http.get($scope.host + 'api/v1/messages/' + message.ID).success(function(data) {
 	  	  $scope.cache[message.ID] = data;
-	      data.previewHTML = $sce.trustAsHtml($scope.getMessageHTML(data));
+
+        // FIXME
+        // - nested mime parts can't be downloaded
+
+        data.$cidMap = {};
+        if(data.MIME && data.MIME.Parts.length) {
+          for(p in data.MIME.Parts) {
+            for(h in data.MIME.Parts[p].Headers) {
+              if(h.toLowerCase() == "content-id") {
+                cid = data.MIME.Parts[p].Headers[h][0]
+                cid = cid.substr(1,cid.length-2)
+                data.$cidMap[cid] = "api/v1/messages/" + message.ID + "/mime/part/" + p + "/download"
+              }
+            }
+          }
+        }
+        console.log(data.$cidMap)
+        // TODO
+        // - scan HTML parts for elements containing CID URI and replace
+
+        h = $scope.getMessageHTML(data)
+        for(c in data.$cidMap) {
+          h = h.replace("cid:" + c, data.$cidMap[c])
+        }
+	      data.previewHTML = $sce.trustAsHtml(h);
   		  $scope.preview = data;
   		  preview = $scope.cache[message.ID];
         //reflow();
