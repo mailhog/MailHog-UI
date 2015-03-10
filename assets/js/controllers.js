@@ -373,6 +373,9 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   }
 
   $scope.getMessagePlain = function(message) {
+    if (message.Content.Headers && message.Content.Headers["Content-Type"] && message.Content.Headers["Content-Type"][0].match("text/plain")) {
+      return $scope.tryDecode(message.Content);
+    }
     var l = $scope.findMatchingMIME(message, "text/plain");
     if(l != null && l !== "undefined") {
       return $scope.tryDecode(l);
