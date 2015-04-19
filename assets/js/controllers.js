@@ -40,6 +40,14 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   $scope.itemsPerPage = 50
   $scope.startIndex = 0
 
+  if(typeof(Storage) !== "undefined") {
+      $scope.itemsPerPage = parseInt(localStorage.getItem("itemsPerPage"), 10)
+      if(!$scope.itemsPerPage) {
+        $scope.itemsPerPage = 50;
+        localStorage.setItem("itemsPerPage", 50)
+      }
+  }
+
   $scope.startMessages = 0
   $scope.countMessages = 0
   $scope.totalMessages = 0
@@ -228,7 +236,9 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
     var e = $scope.startEvent("Loading messages", null, "glyphicon-download");
     var url = $scope.host + 'api/v2/messages'
     if($scope.startIndex > 0) {
-      url += "?start=" + $scope.startIndex;
+      url += "?start=" + $scope.startIndex + "&limit=" + $scope.itemsPerPage;
+    } else {
+      url += "?limit=" + $scope.itemsPerPage;
     }
     $http.get(url).success(function(data) {
       $scope.messages = data.items;
@@ -244,6 +254,14 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
     $scope.startIndex -= $scope.itemsPerPage;
     if($scope.startIndex < 0) {
       $scope.startIndex = 0
+    }
+    $scope.refresh();
+  }
+
+  $scope.showUpdated = function(i) {
+    $scope.itemsPerPage = parseInt(i, 10);
+    if(typeof(Storage) !== "undefined") {
+        localStorage.setItem("itemsPerPage", $scope.itemsPerPage)
     }
     $scope.refresh();
   }
