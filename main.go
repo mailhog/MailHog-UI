@@ -4,8 +4,10 @@ import (
 	"flag"
 	"os"
 
+	gohttp "net/http"
+
+	"github.com/gorilla/pat"
 	"github.com/ian-kent/go-log/log"
-	gotcha "github.com/ian-kent/gotcha/app"
 	"github.com/mailhog/MailHog-UI/assets"
 	"github.com/mailhog/MailHog-UI/config"
 	"github.com/mailhog/MailHog-UI/web"
@@ -29,8 +31,8 @@ func main() {
 	// FIXME need to make API URL configurable
 
 	exitCh = make(chan int)
-	cb := func(app *gotcha.App) {
-		web.CreateWeb(conf, app)
+	cb := func(r gohttp.Handler) {
+		web.CreateWeb(conf, r.(*pat.Router), assets.Asset)
 	}
 	go http.Listen(conf.UIBindAddr, assets.Asset, exitCh, cb)
 

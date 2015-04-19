@@ -6,6 +6,7 @@ ui:
 	go install .
 
 bindata: bindata-deps
+	rm assets/assets.go
 	go-bindata -o assets/assets.go -pkg assets assets/...
 
 bindata-deps:
@@ -17,7 +18,6 @@ fmt:
 deps: bindata-deps
 	#FIXME cleanup this
 	go get github.com/mailhog/http
-	go get github.com/ian-kent/gotcha/gotcha
 	go get github.com/ian-kent/go-log/log
 	go get github.com/ian-kent/envconf
 	go get github.com/ian-kent/goose
