@@ -657,8 +657,8 @@ function convertUnicodeCodePointsToIso2022JpBytes(unicode_codes) {
   return iso2022jp_bytes;
 }
 
-var MIME_FULL_MATCH = /^=\?([^?]+)\?([BQ])\?([^?]+)\?=$/;
-var MIME_PARTIAL_MATCH = /^=\?([^?]+)\?([BQ])\?([^?]+)\?=/;
+var MIME_FULL_MATCH = /^=\?([^?]+)\?([BQbq])\?([^?]+)\?=$/;
+var MIME_PARTIAL_MATCH = /^=\?([^?]+)\?([BQbq])\?([^?]+)\?=/;
 
 // "=?UTF-8?B?44GC?=" => true
 // "foobar" => false
@@ -678,9 +678,9 @@ function decodeMime(str) {
     var mime_encoding = m[2];
     var mime_str = m[3];
     var decoded_bytes;
-    if (mime_encoding == "B") {
+    if (mime_encoding == "B" || mime_encoding == "b") {
       decoded_bytes = decodeBase64(mime_str);
-    } else if (mime_encoding == "Q") {
+    } else if (mime_encoding == "Q" || mime_encoding == "q") {
       decoded_bytes = decodeQuotedPrintable(mime_str);
     }
     if (char_encoding != "" && decoded_bytes) {
