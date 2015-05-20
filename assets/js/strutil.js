@@ -297,6 +297,11 @@ function decodeQuotedPrintable(str) {
   return decodeQuotedPrintableHelper(str, "=");
 }
 
+// "=E3=81=82=E3=81=84" => [ 0xE3, 0x81, 0x82, 0xE3, 0x81, 0x84 ]
+function decodeQuotedPrintableWithoutRFC2047(str) {
+  return decodeQuotedPrintableHelper(str, "=");
+}
+
 // "%E3%81%82%E3%81%84" => [ 0xE3, 0x81, 0x82, 0xE3, 0x81, 0x84 ]
 function decodeUrl(str) {
   return decodeQuotedPrintableHelper(str, "%");
@@ -895,6 +900,12 @@ function unescapeFromBase64(str, encoding) {
 // "=E3=81=82=E3=81=84" => "あい"
 function unescapeFromQuotedPrintable(str, encoding) {
   var decoded_bytes = decodeQuotedPrintable(str);
+  var unicode_bytes = convertBytesToUnicodeCodePoints(decoded_bytes, encoding);
+  return convertUnicodeCodePointsToString(unicode_bytes);
+}
+
+function unescapeFromQuotedPrintableWithoutRFC2047(str, encoding) {
+  var decoded_bytes = decodeQuotedPrintableWithoutRFC2047(str);
   var unicode_bytes = convertBytesToUnicodeCodePoints(decoded_bytes, encoding);
   return convertUnicodeCodePointsToString(unicode_bytes);
 }
