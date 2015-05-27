@@ -18,6 +18,7 @@ fmt:
 deps: bindata-deps
 	#FIXME cleanup this
 	go get github.com/mailhog/http
+	go get github.com/mailhog/MailHog/config
 	go get github.com/ian-kent/go-log/log
 	go get github.com/ian-kent/envconf
 	go get github.com/ian-kent/goose
