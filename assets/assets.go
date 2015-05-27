@@ -5,12 +5,12 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
-	"io/ioutil"
+	"strings"
 	"os"
+	"time"
+	"io/ioutil"
 	"path"
 	"path/filepath"
-	"strings"
-	"time"
 )
 
 func bindata_read(data []byte, name string) ([]byte, error) {
@@ -39,9 +39,9 @@ type asset struct {
 }
 
 type bindata_file_info struct {
-	name    string
-	size    int64
-	mode    os.FileMode
+	name string
+	size int64
+	mode os.FileMode
 	modTime time.Time
 }
 
@@ -80,7 +80,7 @@ func assets_css_bootstrap_3_3_2_min_css() (*asset, error) {
 	}
 
 	info := bindata_file_info{name: "assets/css/bootstrap-3.3.2.min.css", size: 117150, mode: os.FileMode(420), modTime: time.Unix(1421693705, 0)}
-	a := &asset{bytes: bytes, info: info}
+	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
 
@@ -100,7 +100,7 @@ func assets_css_jquery_ui_1_10_4_smoothness_css() (*asset, error) {
 	}
 
 	info := bindata_file_info{name: "assets/css/jquery-ui-1.10.4-smoothness.css", size: 32021, mode: os.FileMode(420), modTime: time.Unix(1414109768, 0)}
-	a := &asset{bytes: bytes, info: info}
+	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
 
@@ -120,7 +120,7 @@ func assets_css_style_css() (*asset, error) {
 	}
 
 	info := bindata_file_info{name: "assets/css/style.css", size: 2022, mode: os.FileMode(420), modTime: time.Unix(1424812759, 0)}
-	a := &asset{bytes: bytes, info: info}
+	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
 
@@ -140,7 +140,7 @@ func assets_fonts_glyphicons_halflings_regular_eot() (*asset, error) {
 	}
 
 	info := bindata_file_info{name: "assets/fonts/glyphicons-halflings-regular.eot", size: 20127, mode: os.FileMode(420), modTime: time.Unix(1421691328, 0)}
-	a := &asset{bytes: bytes, info: info}
+	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
 
@@ -160,7 +160,7 @@ func assets_fonts_glyphicons_halflings_regular_svg() (*asset, error) {
 	}
 
 	info := bindata_file_info{name: "assets/fonts/glyphicons-halflings-regular.svg", size: 108738, mode: os.FileMode(420), modTime: time.Unix(1421691328, 0)}
-	a := &asset{bytes: bytes, info: info}
+	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
 
@@ -180,7 +180,7 @@ func assets_fonts_glyphicons_halflings_regular_ttf() (*asset, error) {
 	}
 
 	info := bindata_file_info{name: "assets/fonts/glyphicons-halflings-regular.ttf", size: 45404, mode: os.FileMode(420), modTime: time.Unix(1421691328, 0)}
-	a := &asset{bytes: bytes, info: info}
+	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
 
@@ -200,7 +200,7 @@ func assets_fonts_glyphicons_halflings_regular_woff() (*asset, error) {
 	}
 
 	info := bindata_file_info{name: "assets/fonts/glyphicons-halflings-regular.woff", size: 23424, mode: os.FileMode(420), modTime: time.Unix(1421691328, 0)}
-	a := &asset{bytes: bytes, info: info}
+	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
 
@@ -220,7 +220,7 @@ func assets_fonts_glyphicons_halflings_regular_woff2() (*asset, error) {
 	}
 
 	info := bindata_file_info{name: "assets/fonts/glyphicons-halflings-regular.woff2", size: 18028, mode: os.FileMode(420), modTime: time.Unix(1421691328, 0)}
-	a := &asset{bytes: bytes, info: info}
+	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
 
@@ -240,7 +240,7 @@ func assets_images_github_png() (*asset, error) {
 	}
 
 	info := bindata_file_info{name: "assets/images/github.png", size: 1714, mode: os.FileMode(420), modTime: time.Unix(1419439390, 0)}
-	a := &asset{bytes: bytes, info: info}
+	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
 
@@ -260,7 +260,7 @@ func assets_images_hog_png() (*asset, error) {
 	}
 
 	info := bindata_file_info{name: "assets/images/hog.png", size: 2806, mode: os.FileMode(420), modTime: time.Unix(1419439390, 0)}
-	a := &asset{bytes: bytes, info: info}
+	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
 
@@ -280,7 +280,7 @@ func assets_js_angular_1_3_8_js() (*asset, error) {
 	}
 
 	info := bindata_file_info{name: "assets/js/angular-1.3.8.js", size: 949740, mode: os.FileMode(420), modTime: time.Unix(1419733824, 0)}
-	a := &asset{bytes: bytes, info: info}
+	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
 
@@ -300,7 +300,7 @@ func assets_js_bootstrap_3_3_2_min_js() (*asset, error) {
 	}
 
 	info := bindata_file_info{name: "assets/js/bootstrap-3.3.2.min.js", size: 35452, mode: os.FileMode(420), modTime: time.Unix(1421693715, 0)}
-	a := &asset{bytes: bytes, info: info}
+	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
 
@@ -320,7 +320,7 @@ func assets_js_controllers_js() (*asset, error) {
 	}
 
 	info := bindata_file_info{name: "assets/js/controllers.js", size: 15189, mode: os.FileMode(420), modTime: time.Unix(1432149497, 0)}
-	a := &asset{bytes: bytes, info: info}
+	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
 
@@ -340,7 +340,7 @@ func assets_js_jquery_1_11_0_min_js() (*asset, error) {
 	}
 
 	info := bindata_file_info{name: "assets/js/jquery-1.11.0.min.js", size: 96381, mode: os.FileMode(420), modTime: time.Unix(1414109767, 0)}
-	a := &asset{bytes: bytes, info: info}
+	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
 
@@ -360,7 +360,7 @@ func assets_js_jquery_ui_1_10_4_min_js() (*asset, error) {
 	}
 
 	info := bindata_file_info{name: "assets/js/jquery-ui-1.10.4.min.js", size: 228539, mode: os.FileMode(420), modTime: time.Unix(1414109768, 0)}
-	a := &asset{bytes: bytes, info: info}
+	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
 
@@ -380,7 +380,7 @@ func assets_js_moment_2_8_4_js() (*asset, error) {
 	}
 
 	info := bindata_file_info{name: "assets/js/moment-2.8.4.js", size: 96381, mode: os.FileMode(420), modTime: time.Unix(1416403833, 0)}
-	a := &asset{bytes: bytes, info: info}
+	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
 
@@ -400,7 +400,7 @@ func assets_js_strutil_js() (*asset, error) {
 	}
 
 	info := bindata_file_info{name: "assets/js/strutil.js", size: 32343, mode: os.FileMode(420), modTime: time.Unix(1432149486, 0)}
-	a := &asset{bytes: bytes, info: info}
+	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
 
@@ -420,7 +420,7 @@ func assets_templates_index_html() (*asset, error) {
 	}
 
 	info := bindata_file_info{name: "assets/templates/index.html", size: 12164, mode: os.FileMode(420), modTime: time.Unix(1429465761, 0)}
-	a := &asset{bytes: bytes, info: info}
+	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
 
@@ -440,7 +440,7 @@ func assets_templates_layout_html() (*asset, error) {
 	}
 
 	info := bindata_file_info{name: "assets/templates/layout.html", size: 6086, mode: os.FileMode(420), modTime: time.Unix(1429465274, 0)}
-	a := &asset{bytes: bytes, info: info}
+	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
 
@@ -463,7 +463,7 @@ func Asset(name string) ([]byte, error) {
 // It simplifies safe initialization of global variables.
 func MustAsset(name string) []byte {
 	a, err := Asset(name)
-	if err != nil {
+	if (err != nil) {
 		panic("asset: Asset(" + name + "): " + err.Error())
 	}
 
@@ -496,25 +496,25 @@ func AssetNames() []string {
 
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() (*asset, error){
-	"assets/css/bootstrap-3.3.2.min.css":              assets_css_bootstrap_3_3_2_min_css,
-	"assets/css/jquery-ui-1.10.4-smoothness.css":      assets_css_jquery_ui_1_10_4_smoothness_css,
-	"assets/css/style.css":                            assets_css_style_css,
-	"assets/fonts/glyphicons-halflings-regular.eot":   assets_fonts_glyphicons_halflings_regular_eot,
-	"assets/fonts/glyphicons-halflings-regular.svg":   assets_fonts_glyphicons_halflings_regular_svg,
-	"assets/fonts/glyphicons-halflings-regular.ttf":   assets_fonts_glyphicons_halflings_regular_ttf,
-	"assets/fonts/glyphicons-halflings-regular.woff":  assets_fonts_glyphicons_halflings_regular_woff,
+	"assets/css/bootstrap-3.3.2.min.css": assets_css_bootstrap_3_3_2_min_css,
+	"assets/css/jquery-ui-1.10.4-smoothness.css": assets_css_jquery_ui_1_10_4_smoothness_css,
+	"assets/css/style.css": assets_css_style_css,
+	"assets/fonts/glyphicons-halflings-regular.eot": assets_fonts_glyphicons_halflings_regular_eot,
+	"assets/fonts/glyphicons-halflings-regular.svg": assets_fonts_glyphicons_halflings_regular_svg,
+	"assets/fonts/glyphicons-halflings-regular.ttf": assets_fonts_glyphicons_halflings_regular_ttf,
+	"assets/fonts/glyphicons-halflings-regular.woff": assets_fonts_glyphicons_halflings_regular_woff,
 	"assets/fonts/glyphicons-halflings-regular.woff2": assets_fonts_glyphicons_halflings_regular_woff2,
-	"assets/images/github.png":                        assets_images_github_png,
-	"assets/images/hog.png":                           assets_images_hog_png,
-	"assets/js/angular-1.3.8.js":                      assets_js_angular_1_3_8_js,
-	"assets/js/bootstrap-3.3.2.min.js":                assets_js_bootstrap_3_3_2_min_js,
-	"assets/js/controllers.js":                        assets_js_controllers_js,
-	"assets/js/jquery-1.11.0.min.js":                  assets_js_jquery_1_11_0_min_js,
-	"assets/js/jquery-ui-1.10.4.min.js":               assets_js_jquery_ui_1_10_4_min_js,
-	"assets/js/moment-2.8.4.js":                       assets_js_moment_2_8_4_js,
-	"assets/js/strutil.js":                            assets_js_strutil_js,
-	"assets/templates/index.html":                     assets_templates_index_html,
-	"assets/templates/layout.html":                    assets_templates_layout_html,
+	"assets/images/github.png": assets_images_github_png,
+	"assets/images/hog.png": assets_images_hog_png,
+	"assets/js/angular-1.3.8.js": assets_js_angular_1_3_8_js,
+	"assets/js/bootstrap-3.3.2.min.js": assets_js_bootstrap_3_3_2_min_js,
+	"assets/js/controllers.js": assets_js_controllers_js,
+	"assets/js/jquery-1.11.0.min.js": assets_js_jquery_1_11_0_min_js,
+	"assets/js/jquery-ui-1.10.4.min.js": assets_js_jquery_ui_1_10_4_min_js,
+	"assets/js/moment-2.8.4.js": assets_js_moment_2_8_4_js,
+	"assets/js/strutil.js": assets_js_strutil_js,
+	"assets/templates/index.html": assets_templates_index_html,
+	"assets/templates/layout.html": assets_templates_layout_html,
 }
 
 // AssetDir returns the file names below a certain
@@ -553,86 +553,105 @@ func AssetDir(name string) ([]string, error) {
 }
 
 type _bintree_t struct {
-	Func     func() (*asset, error)
+	Func func() (*asset, error)
 	Children map[string]*_bintree_t
 }
-
 var _bintree = &_bintree_t{nil, map[string]*_bintree_t{
 	"assets": &_bintree_t{nil, map[string]*_bintree_t{
 		"css": &_bintree_t{nil, map[string]*_bintree_t{
-			"bootstrap-3.3.2.min.css":         &_bintree_t{assets_css_bootstrap_3_3_2_min_css, map[string]*_bintree_t{}},
-			"jquery-ui-1.10.4-smoothness.css": &_bintree_t{assets_css_jquery_ui_1_10_4_smoothness_css, map[string]*_bintree_t{}},
-			"style.css":                       &_bintree_t{assets_css_style_css, map[string]*_bintree_t{}},
+			"bootstrap-3.3.2.min.css": &_bintree_t{assets_css_bootstrap_3_3_2_min_css, map[string]*_bintree_t{
+			}},
+			"jquery-ui-1.10.4-smoothness.css": &_bintree_t{assets_css_jquery_ui_1_10_4_smoothness_css, map[string]*_bintree_t{
+			}},
+			"style.css": &_bintree_t{assets_css_style_css, map[string]*_bintree_t{
+			}},
 		}},
 		"fonts": &_bintree_t{nil, map[string]*_bintree_t{
-			"glyphicons-halflings-regular.eot":   &_bintree_t{assets_fonts_glyphicons_halflings_regular_eot, map[string]*_bintree_t{}},
-			"glyphicons-halflings-regular.svg":   &_bintree_t{assets_fonts_glyphicons_halflings_regular_svg, map[string]*_bintree_t{}},
-			"glyphicons-halflings-regular.ttf":   &_bintree_t{assets_fonts_glyphicons_halflings_regular_ttf, map[string]*_bintree_t{}},
-			"glyphicons-halflings-regular.woff":  &_bintree_t{assets_fonts_glyphicons_halflings_regular_woff, map[string]*_bintree_t{}},
-			"glyphicons-halflings-regular.woff2": &_bintree_t{assets_fonts_glyphicons_halflings_regular_woff2, map[string]*_bintree_t{}},
+			"glyphicons-halflings-regular.eot": &_bintree_t{assets_fonts_glyphicons_halflings_regular_eot, map[string]*_bintree_t{
+			}},
+			"glyphicons-halflings-regular.svg": &_bintree_t{assets_fonts_glyphicons_halflings_regular_svg, map[string]*_bintree_t{
+			}},
+			"glyphicons-halflings-regular.ttf": &_bintree_t{assets_fonts_glyphicons_halflings_regular_ttf, map[string]*_bintree_t{
+			}},
+			"glyphicons-halflings-regular.woff": &_bintree_t{assets_fonts_glyphicons_halflings_regular_woff, map[string]*_bintree_t{
+			}},
+			"glyphicons-halflings-regular.woff2": &_bintree_t{assets_fonts_glyphicons_halflings_regular_woff2, map[string]*_bintree_t{
+			}},
 		}},
 		"images": &_bintree_t{nil, map[string]*_bintree_t{
-			"github.png": &_bintree_t{assets_images_github_png, map[string]*_bintree_t{}},
-			"hog.png":    &_bintree_t{assets_images_hog_png, map[string]*_bintree_t{}},
+			"github.png": &_bintree_t{assets_images_github_png, map[string]*_bintree_t{
+			}},
+			"hog.png": &_bintree_t{assets_images_hog_png, map[string]*_bintree_t{
+			}},
 		}},
 		"js": &_bintree_t{nil, map[string]*_bintree_t{
-			"angular-1.3.8.js":        &_bintree_t{assets_js_angular_1_3_8_js, map[string]*_bintree_t{}},
-			"bootstrap-3.3.2.min.js":  &_bintree_t{assets_js_bootstrap_3_3_2_min_js, map[string]*_bintree_t{}},
-			"controllers.js":          &_bintree_t{assets_js_controllers_js, map[string]*_bintree_t{}},
-			"jquery-1.11.0.min.js":    &_bintree_t{assets_js_jquery_1_11_0_min_js, map[string]*_bintree_t{}},
-			"jquery-ui-1.10.4.min.js": &_bintree_t{assets_js_jquery_ui_1_10_4_min_js, map[string]*_bintree_t{}},
-			"moment-2.8.4.js":         &_bintree_t{assets_js_moment_2_8_4_js, map[string]*_bintree_t{}},
-			"strutil.js":              &_bintree_t{assets_js_strutil_js, map[string]*_bintree_t{}},
+			"angular-1.3.8.js": &_bintree_t{assets_js_angular_1_3_8_js, map[string]*_bintree_t{
+			}},
+			"bootstrap-3.3.2.min.js": &_bintree_t{assets_js_bootstrap_3_3_2_min_js, map[string]*_bintree_t{
+			}},
+			"controllers.js": &_bintree_t{assets_js_controllers_js, map[string]*_bintree_t{
+			}},
+			"jquery-1.11.0.min.js": &_bintree_t{assets_js_jquery_1_11_0_min_js, map[string]*_bintree_t{
+			}},
+			"jquery-ui-1.10.4.min.js": &_bintree_t{assets_js_jquery_ui_1_10_4_min_js, map[string]*_bintree_t{
+			}},
+			"moment-2.8.4.js": &_bintree_t{assets_js_moment_2_8_4_js, map[string]*_bintree_t{
+			}},
+			"strutil.js": &_bintree_t{assets_js_strutil_js, map[string]*_bintree_t{
+			}},
 		}},
 		"templates": &_bintree_t{nil, map[string]*_bintree_t{
-			"index.html":  &_bintree_t{assets_templates_index_html, map[string]*_bintree_t{}},
-			"layout.html": &_bintree_t{assets_templates_layout_html, map[string]*_bintree_t{}},
+			"index.html": &_bintree_t{assets_templates_index_html, map[string]*_bintree_t{
+			}},
+			"layout.html": &_bintree_t{assets_templates_layout_html, map[string]*_bintree_t{
+			}},
 		}},
 	}},
 }}
 
 // Restore an asset under the given directory
 func RestoreAsset(dir, name string) error {
-	data, err := Asset(name)
-	if err != nil {
-		return err
-	}
-	info, err := AssetInfo(name)
-	if err != nil {
-		return err
-	}
-	err = os.MkdirAll(_filePath(dir, path.Dir(name)), os.FileMode(0755))
-	if err != nil {
-		return err
-	}
-	err = ioutil.WriteFile(_filePath(dir, name), data, info.Mode())
-	if err != nil {
-		return err
-	}
-	err = os.Chtimes(_filePath(dir, name), info.ModTime(), info.ModTime())
-	if err != nil {
-		return err
-	}
-	return nil
+        data, err := Asset(name)
+        if err != nil {
+                return err
+        }
+        info, err := AssetInfo(name)
+        if err != nil {
+                return err
+        }
+        err = os.MkdirAll(_filePath(dir, path.Dir(name)), os.FileMode(0755))
+        if err != nil {
+                return err
+        }
+        err = ioutil.WriteFile(_filePath(dir, name), data, info.Mode())
+        if err != nil {
+                return err
+        }
+        err = os.Chtimes(_filePath(dir, name), info.ModTime(), info.ModTime())
+        if err != nil {
+                return err
+        }
+        return nil
 }
 
 // Restore assets under the given directory recursively
 func RestoreAssets(dir, name string) error {
-	children, err := AssetDir(name)
-	if err != nil { // File
-		return RestoreAsset(dir, name)
-	} else { // Dir
-		for _, child := range children {
-			err = RestoreAssets(dir, path.Join(name, child))
-			if err != nil {
-				return err
-			}
-		}
-	}
-	return nil
+        children, err := AssetDir(name)
+        if err != nil { // File
+                return RestoreAsset(dir, name)
+        } else { // Dir
+                for _, child := range children {
+                        err = RestoreAssets(dir, path.Join(name, child))
+                        if err != nil {
+                                return err
+                        }
+                }
+        }
+        return nil
 }
 
 func _filePath(dir, name string) string {
-	cannonicalName := strings.Replace(name, "\\", "/", -1)
-	return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
+        cannonicalName := strings.Replace(name, "\\", "/", -1)
+        return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
 }
+
