@@ -102,6 +102,7 @@ func (web Web) Index() func(http.ResponseWriter, *http.Request) {
 			return
 		}
 
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.WriteHeader(200)
 		w.Write(b.Bytes())
 	}
