@@ -6,6 +6,7 @@ import (
 	"log"
 	"mime"
 	"net/http"
+	"path/filepath"
 	"strings"
 
 	"github.com/gorilla/pat"
@@ -38,7 +39,9 @@ func (web Web) Static(pattern string) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		fp := strings.TrimSuffix(pattern, "{{file}}") + req.URL.Query().Get(":file")
 		if b, err := web.asset(fp); err == nil {
-			w.Header().Set("Content-Type", mime.TypeByExtension(fp))
+			ext := filepath.Ext(fp)
+
+			w.Header().Set("Content-Type", mime.TypeByExtension(ext))
 			w.WriteHeader(200)
 			w.Write(b)
 			return
