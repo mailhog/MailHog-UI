@@ -364,6 +364,10 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
     }, 10);
   }
 
+  $scope.fileSize = function(bytes) {
+    return filesize(bytes)
+  }
+
   $scope.tryDecodeContent = function(message) {
     var charset = "UTF-8"
     if(message.Content.Headers["Content-Type"][0]) {

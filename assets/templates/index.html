@@ -45,12 +45,15 @@
       </div>
     </div>
 
-    <div class="col-md-6">
+    <div class="col-md-5">
       <span class="subject unread">{{ tryDecodeMime(message.Content.Headers["Subject"][0]) }}</span>
     </div>
 
     <div class="col-md-3 text-right">
       {{ getMoment(date(message.Created)).fromNow() }}
+    </div>
+    <div class="col-md-1 text-right">
+      {{ fileSize(message.Raw.Data.length) }}
     </div>
   </div>
 </div>
