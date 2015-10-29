@@ -340,6 +340,17 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   		  preview = $scope.cache[message.ID];
         //reflow();
         e.done();
+
+        $timeout(function() {
+          var el = document.getElementById("preview-html");
+          var frame;
+          for(var i = 0; i < window.frames.length; i++) {
+            if (window.frames[i].frameElement === el) {
+              frame = window.frames[i];
+            }
+          }
+          frame.eval('var list = document.getElementsByTagName("a"); for (var i = 0; i < list.length; i++) { list[i].target = "_blank" }');
+        }, 200);
 	    });
 	}
   }
