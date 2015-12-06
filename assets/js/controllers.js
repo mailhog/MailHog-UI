@@ -1,5 +1,16 @@
 var mailhogApp = angular.module('mailhogApp', []);
 
+mailhogApp.directive('targetBlank', function(){
+  return {
+    link : function(scope, element, attributes){
+      element.on('load', function() {
+        var a = element.contents().find('a');
+        a.attr('target', '_blank');
+      });
+    }
+  };
+});
+
 function guid() {
   function s4() {
     return Math.floor((1 + Math.random()) * 0x10000)
@@ -341,7 +352,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
         //reflow();
         e.done();
 	    });
-	}
+	   }
   }
 
   $scope.toggleHeaders = function(val) {

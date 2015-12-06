@@ -185,7 +185,7 @@
     </ul>
 
     <div class="tab-content">
-      <iframe ng-if="hasHTML(preview)" ng-class="{ active: hasHTML(preview) }" class="tab-pane" id="preview-html" srcdoc="{{preview.previewHTML}}" seamless frameborder="0" style="width: 100%"></iframe>
+      <iframe target-blank="" ng-if="hasHTML(preview)" ng-class="{ active: hasHTML(preview) }" class="tab-pane" id="preview-html" srcdoc="{{preview.previewHTML}}" seamless frameborder="0" style="width: 100%"></iframe>
       <div class="tab-pane" ng-class="{ active: !hasHTML(preview) }" id="preview-plain">{{ getMessagePlain(preview) }}</div>
       <div class="tab-pane" id="preview-source">{{ getSource(preview) }}</div>
       <div class="tab-pane" id="preview-mime">
