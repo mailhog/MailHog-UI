@@ -35,7 +35,7 @@ func CreateWeb(cfg *config.Config, pat *pat.Router, asset func(string) ([]byte, 
 	pat.Path(WebPath + "/css/{file:.*}").Methods("GET").HandlerFunc(web.Static("assets/css/{{file}}"))
 	pat.Path(WebPath + "/js/{file:.*}").Methods("GET").HandlerFunc(web.Static("assets/js/{{file}}"))
 	pat.Path(WebPath + "/fonts/{file:.*}").Methods("GET").HandlerFunc(web.Static("assets/fonts/{{file}}"))
-	pat.Path(WebPath + "/").Methods("GET").HandlerFunc(web.Index())
+	pat.StrictSlash(true).Path(WebPath + "/").Methods("GET").HandlerFunc(web.Index())
 
 	return web
 }
