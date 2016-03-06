@@ -29,11 +29,6 @@ func CreateWeb(cfg *config.Config, pat *pat.Router, asset func(string) ([]byte, 
 
 	WebPath = cfg.WebPath
 
-	//add a leading slash
-	if WebPath != "" && !(WebPath[0] == '/') {
-		WebPath = "/" + WebPath
-	}
-
 	log.Printf("Serving under http://%s%s/", cfg.UIBindAddr, WebPath)
 
 	pat.Path(WebPath + "/images/{file:.*}").Methods("GET").HandlerFunc(web.Static("assets/images/{{file}}"))
