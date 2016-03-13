@@ -389,7 +389,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
     var contentTransferEncoding = message.Content.Headers["Content-Transfer-Encoding"][0];
 
     if(contentTransferEncoding) {
-      switch (contentTransferEncoding) {
+      switch (contentTransferEncoding.toLowerCase()) {
         case 'quoted-printable':
           content = content.replace(/=[\r\n]+/gm,"");
           content = unescapeFromQuotedPrintableWithoutRFC2047(content, charset);
@@ -404,14 +404,14 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
 
     return content;
   }
-  
+
   $scope.formatMessagePlain = function(message) {
     var body = $scope.getMessagePlain(message);
     var escaped = $scope.escapeHtml(body);
     var formatted = escaped.replace(/(https?:\/\/)([-[\]A-Za-z0-9._~:/?#@!$()*+,;=%]|&amp;|&#39;)+/g, '<a href="$&" target="_blank">$&</a>');
     return $sce.trustAsHtml(formatted);
   }
-  
+
   $scope.escapeHtml = function(html) {
     var entityMap = {
       '&': '&amp;',
