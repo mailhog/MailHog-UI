@@ -404,6 +404,26 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
 
     return content;
   }
+  
+  $scope.formatMessagePlain = function(message) {
+    var body = $scope.getMessagePlain(message);
+    var escaped = $scope.escapeHtml(body);
+    var formatted = escaped.replace(/(https?:\/\/)([-[\]A-Za-z0-9._~:/?#@!$()*+,;=%]|&amp;|&#39;)+/g, '<a href="$&" target="_blank">$&</a>');
+    return $sce.trustAsHtml(formatted);
+  }
+  
+  $scope.escapeHtml = function(html) {
+    var entityMap = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    };
+    return html.replace(/[&<>"']/g, function (s) {
+      return entityMap[s];
+    });
+  }
 
   $scope.getMessagePlain = function(message) {
     if (message.Content.Headers && message.Content.Headers["Content-Type"] && message.Content.Headers["Content-Type"][0].match("text/plain")) {
@@ -414,7 +434,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
       return $scope.tryDecode(l);
     }
     return message.Content.Body;
-	}
+  }
 
   $scope.findMatchingMIME = function(part, mime) {
     // TODO cache results
