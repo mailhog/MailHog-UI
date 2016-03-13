@@ -10,12 +10,14 @@ func DefaultConfig() *Config {
 	return &Config{
 		APIHost:    "",
 		UIBindAddr: "0.0.0.0:8025",
+		WebPath:    "",
 	}
 }
 
 type Config struct {
 	APIHost    string
 	UIBindAddr string
+	WebPath    string
 }
 
 var cfg = DefaultConfig()

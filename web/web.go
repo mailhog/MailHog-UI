@@ -14,6 +14,7 @@ import (
 )
 
 var APIHost string
+var WebPath string
 
 type Web struct {
 	config *config.Config
@@ -26,11 +27,15 @@ func CreateWeb(cfg *config.Config, pat *pat.Router, asset func(string) ([]byte, 
 		asset:  asset,
 	}
 
-	pat.Path("/images/{file:.*}").Methods("GET").HandlerFunc(web.Static("assets/images/{{file}}"))
-	pat.Path("/css/{file:.*}").Methods("GET").HandlerFunc(web.Static("assets/css/{{file}}"))
-	pat.Path("/js/{file:.*}").Methods("GET").HandlerFunc(web.Static("assets/js/{{file}}"))
-	pat.Path("/fonts/{file:.*}").Methods("GET").HandlerFunc(web.Static("assets/fonts/{{file}}"))
-	pat.Path("/").Methods("GET").HandlerFunc(web.Index())
+	WebPath = cfg.WebPath
+
+	log.Printf("Serving under http://%s%s/", cfg.UIBindAddr, WebPath)
+
+	pat.Path(WebPath + "/images/{file:.*}").Methods("GET").HandlerFunc(web.Static("assets/images/{{file}}"))
+	pat.Path(WebPath + "/css/{file:.*}").Methods("GET").HandlerFunc(web.Static("assets/css/{{file}}"))
+	pat.Path(WebPath + "/js/{file:.*}").Methods("GET").HandlerFunc(web.Static("assets/js/{{file}}"))
+	pat.Path(WebPath + "/fonts/{file:.*}").Methods("GET").HandlerFunc(web.Static("assets/fonts/{{file}}"))
+	pat.StrictSlash(true).Path(WebPath + "/").Methods("GET").HandlerFunc(web.Index())
 
 	return web
 }
