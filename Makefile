@@ -24,8 +24,6 @@ deps: bindata-deps
 	go get github.com/ian-kent/goose
 	go get github.com/ian-kent/linkio
 	go get labix.org/v2/mgo
-	# added to fix travis issues
-	go get code.google.com/p/go.crypto/bcrypt
 
 test-deps:
 	go get github.com/smartystreets/goconvey
