@@ -90,7 +90,7 @@
 <div class="messages container-fluid" ng-if="searching">
   <div class="msglist-message row" ng-repeat="message in searchMessages" ng-click="selectMessage(message)">
     <div class="col-md-3">
-      {{ tryDecodeMime(getDisplayName(message.Content.Headers["From"][0]) || message.From.Mailbox + "@" + message.From.Domain) }}
+      {{ getSender(message) }}
 
       <div ng-if="message.Content.Headers['To']">
         <div ng-repeat="to in message.Content.Headers['To']" style="color: #777">
