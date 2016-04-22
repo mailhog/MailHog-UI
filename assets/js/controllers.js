@@ -120,7 +120,9 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
     $scope.source == null ? $scope.openStream() : $scope.closeStream();
   }
   $scope.openStream = function() {
-    $scope.source = new EventSource($scope.host + 'api/v1/events');
+    var host = $scope.host.replace(/^http/, 'ws') ||
+               ("ws://" + location.hostname + (location.port ? ':' + location.port : '') + location.pathname);
+    $scope.source = new WebSocket(host + 'api/v2/websocket');
     $scope.source.addEventListener('message', function(e) {
       $scope.$apply(function() {
         $scope.totalMessages++;
