@@ -23,6 +23,11 @@
 #search {
   width: 500px;
 }
+@media (max-width: 991px) {
+  #search {
+    width: 420px;
+  }
+}
 
 /* http://stackoverflow.com/questions/18838964/add-bootstrap-glyphicon-to-input-box */
 .left-inner-addon {
