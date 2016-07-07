@@ -23,7 +23,7 @@ deps: bindata-deps
 	go get github.com/ian-kent/envconf
 	go get github.com/ian-kent/goose
 	go get github.com/ian-kent/linkio
-	go get labix.org/v2/mgo
+	go get gopkg.in/mgo.v2
 
 test-deps:
 	go get github.com/smartystreets/goconvey
