@@ -197,7 +197,7 @@
             <i class="glyphicon glyphicon-save"></i>
             Download
           </a>
-          {{ part.Headers["Content-Type"][0] || "Unknown type" }} ({{ part.Size }} bytes)
+          {{ tryDecodeMime(part.Headers["Content-Type"][0] || "Unknown type") }} ({{ part.Size }} bytes)
         </div>
       </div>
     </div>
