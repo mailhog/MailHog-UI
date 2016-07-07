@@ -98,6 +98,9 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
 
   $(function() {
     $scope.openStream();
+    if(typeof(Notification) !== "undefined") {
+      Notification.requestPermission();
+    }
   });
 
   $scope.getMoment = function(a) {
@@ -134,9 +137,13 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
         if ($scope.countMessages < $scope.itemsPerPage) {
           $scope.countMessages++;
         }
-        $scope.messages.unshift(JSON.parse(e.data));
+        var message = JSON.parse(e.data);
+        $scope.messages.unshift(message);
         while($scope.messages.length > $scope.itemsPerPage) {
           $scope.messages.pop();
+        }
+        if(typeof(Notification) !== "undefined") {
+          $scope.createNotification(message);
         }
       });
     }, false);
@@ -159,6 +166,21 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
     $scope.hasEventSource = false;
   }
 
+  $scope.createNotification = function(message) {
+    var title = "Mail from " + $scope.getSender(message);
+    var options = {
+      body: $scope.tryDecodeMime(message.Content.Headers["Subject"][0]),
+      tag: "MailHog",
+      icon: "images/hog.png"
+    };
+    var notification = new Notification(title, options);
+    notification.addEventListener('click', function(e) {
+      $scope.selectMessage(message);
+      window.focus();
+      notification.close();
+    });
+  }
+
   $scope.tryDecodeMime = function(str) {
     return unescapeFromMime(str)
   }
@@ -166,6 +188,11 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   $scope.resizePreview = function() {
     $('.tab-content').height($(window).innerHeight() - $('.tab-content').offset().top);
     $('.tab-content .tab-pane').height($(window).innerHeight() - $('.tab-content').offset().top);
+  }
+
+  $scope.getSender = function(message) {
+    return $scope.tryDecodeMime($scope.getDisplayName(message.Content.Headers["From"][0]) ||
+                                message.From.Mailbox + "@" + message.From.Domain);
   }
 
   $scope.getDisplayName = function(value) {
