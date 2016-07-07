@@ -29,7 +29,7 @@
 
 <div class="messages container-fluid" ng-if="!preview && !searching">
   <div class="msglist-message row" ng-repeat="message in messages" ng-click="selectMessage(message)">
-    <div class="col-md-3">
+    <div class="col-md-3 col-sm-4">
       {{ getSender(message) }}
 
       <div ng-if="message.Content.Headers['To']">
@@ -45,15 +45,18 @@
       </div>
     </div>
 
-    <div class="col-md-5">
+    <div class="col-md-5 col-sm-5">
       <span class="subject unread">{{ tryDecodeMime(message.Content.Headers["Subject"][0]) }}</span>
     </div>
-
-    <div class="col-md-3 text-right">
-      {{ getMoment(date(message.Created)).fromNow() }}
-    </div>
-    <div class="col-md-1 text-right">
-      {{ fileSize(message.Raw.Data.length) }}
+    <div class="col-md-4 col-sm-3">
+      <div class="row">
+        <div class="col-md-9 col-sm-12 text-right">
+          {{ getMoment(date(message.Created)).fromNow() }}
+        </div>
+        <div class="col-md-3 col-sm-12 text-right">
+          {{ fileSize(message.Raw.Data.length) }}
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -89,7 +92,7 @@
 
 <div class="messages container-fluid" ng-if="searching">
   <div class="msglist-message row" ng-repeat="message in searchMessages" ng-click="selectMessage(message)">
-    <div class="col-md-3">
+    <div class="col-md-3 col-sm-4">
       {{ getSender(message) }}
 
       <div ng-if="message.Content.Headers['To']">
@@ -105,11 +108,11 @@
       </div>
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md-3 col-sm-5">
       <span class="subject unread">{{ tryDecodeMime(message.Content.Headers["Subject"][0]) }}</span>
     </div>
 
-    <div class="col-md-3 col-md-offset-3 text-right">
+    <div class="col-md-3 col-md-offset-3 col-sm-3 text-right">
       {{ getMoment(date(message.Created)).fromNow() }}
     </div>
   </div>
