@@ -109,7 +109,8 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
 
   $scope.backToInbox = function() {
     $scope.preview = null;
-    $scope.searching = false;
+    $scope.searching = $scope.wasSearching;
+    $scope.wasSearching = false;
   }
   $scope.backToInboxFirst = function() {
     $scope.preview = null;
@@ -343,6 +344,8 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
     $timeout(function(){
       $scope.resizePreview();
     }, 0);
+    $scope.wasSearching = $scope.searching;
+    $scope.searching = false;
   	if($scope.cache[message.ID]) {
   		$scope.preview = $scope.cache[message.ID];
       //reflow();
