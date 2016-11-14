@@ -487,9 +487,14 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   }
   $scope.hasHTML = function(message) {
     // TODO cache this
-    if (message.Content.Headers && message.Content.Headers["Content-Type"] && message.Content.Headers["Content-Type"][0].match("text/html")) {
-      return true;
+    for(var header in message.Content.Headers) {
+      if(header.toLowerCase() == 'content-type') {
+        if(message.Content.Headers[header][0].match("text/html")) {
+          return true
+        }
+      }
     }
+
     var l = $scope.findMatchingMIME(message, "text/html");
     if(l != null && l !== "undefined") {
       return true
@@ -498,9 +503,14 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   }
   $scope.getMessageHTML = function(message) {
     console.log(message);
-    if (message.Content.Headers && message.Content.Headers["Content-Type"] && message.Content.Headers["Content-Type"][0].match("text/html")) {
-      return $scope.tryDecode(message.Content);
+    for(var header in message.Content.Headers) {
+      if(header.toLowerCase() == 'content-type') {
+        if(message.Content.Headers[header][0].match("text/html")) {
+          return $scope.tryDecode(message.Content);
+        }
+      }
     }
+
     var l = $scope.findMatchingMIME(message, "text/html");
     if(l != null && l !== "undefined") {
       return $scope.tryDecode(l);
