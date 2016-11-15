@@ -124,7 +124,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   }
   $scope.openStream = function() {
     var host = $scope.host.replace(/^http/, 'ws') ||
-               ("ws://" + location.hostname + (location.port ? ':' + location.port : '') + location.pathname);
+               (location.protocol.replace(/^http/, 'ws') + '//' + location.hostname + (location.port ? ':' + location.port : '') + location.pathname);
     $scope.source = new WebSocket(host + 'api/v2/websocket');
     $scope.source.addEventListener('message', function(e) {
       $scope.$apply(function() {
