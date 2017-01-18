@@ -367,13 +367,10 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
             }
           }
         }
-        console.log(data.$cidMap)
-        // TODO
-        // - scan HTML parts for elements containing CID URI and replace
 
         h = $scope.getMessageHTML(data)
         for(c in data.$cidMap) {
-          h = h.replace("cid:" + c, data.$cidMap[c])
+          h = h.split("cid:" + c).join(data.$cidMap[c]);
         }
 	      data.previewHTML = $sce.trustAsHtml(h);
   		  $scope.preview = data;
