@@ -373,7 +373,9 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
 
         h = $scope.getMessageHTML(data)
         for(c in data.$cidMap) {
-          h = h.replace("cid:" + c, data.$cidMap[c])
+	  str = "cid:" + c;
+	  pat = str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+          h = h.replace(new RegExp(pat, 'g'), data.$cidMap[c])
         }
 	      data.previewHTML = $sce.trustAsHtml(h);
   		  $scope.preview = data;
