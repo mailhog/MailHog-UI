@@ -3,16 +3,16 @@
 	"ignore": "test",
 	"package": [
 		{
-			"checksumSHA1": "iIUYZyoanCQQTUaWsu8b+iOSPt4=",
+			"checksumSHA1": "g/V4qrXjUGG9B+e3hB+4NAYJ5Gs=",
 			"path": "github.com/gorilla/context",
-			"revision": "a8d44e7d8e4d532b6a27a02dd82abb31cc1b01bd",
-			"revisionTime": "2016-04-22T13:42:37Z"
+			"revision": "08b5f424b9271eedf6f9f0ce86cb9396ed337a42",
+			"revisionTime": "2016-08-17T18:46:32Z"
 		},
 		{
-			"checksumSHA1": "/WoZGh9L9hFOcrU9d7rAeFPDy1U=",
+			"checksumSHA1": "oDsOWp1nBMGpQ9gCFnczGADwZTE=",
 			"path": "github.com/gorilla/mux",
-			"revision": "9c19ed558d5df4da88e2ade9c8940d742aef0e7e",
-			"revisionTime": "2016-05-02T17:56:24Z"
+			"revision": "0a192a193177452756c362c20087ddafcf6829c4",
+			"revisionTime": "2016-09-02T15:33:43Z"
 		},
 		{
 			"checksumSHA1": "41syjEeyv9W/6j89XArd1yyWNBU=",
@@ -27,7 +27,7 @@
 			"revisionTime": "2014-10-26T12:11:21Z"
 		},
 		{
-			"checksumSHA1": "6TsXaoh9csBUNp2OkeLJPVyaHuo=",
+			"checksumSHA1": "eSeZeKPsZJy0bpJy3Lgcs9xYBtI=",
 			"path": "github.com/ian-kent/go-log/appenders",
 			"revision": "5731446c36ab9f716106ce0731f484c50fdf1ad1",
 			"revisionTime": "2016-01-13T21:12:17Z"
@@ -59,14 +59,14 @@
 		{
 			"checksumSHA1": "Cfa44hA5oRKUiOPYu3glAg69cUc=",
 			"path": "github.com/mailhog/MailHog/config",
-			"revision": "c68ed81a0c45a8df23e2c60d110d470a17dffab3",
-			"revisionTime": "2016-08-10T06:56:48Z"
+			"revision": "a6aee3ed1b49c54af2e9620224d6455f56e6e6d9",
+			"revisionTime": "2017-04-16T18:38:42Z"
 		},
 		{
 			"checksumSHA1": "vyMXU+/pSliAx1yRf6YdKRhF9Ik=",
 			"path": "github.com/mailhog/http",
-			"revision": "066a2dfd9d8bf7a94a2df4e1b4b9db3556b56bbb",
-			"revisionTime": "2015-10-06T19:19:25Z"
+			"revision": "f60054419202104f75c0fcaf132ca6e2ceae37f4",
+			"revisionTime": "2016-08-10T07:45:55Z"
 		},
 		{
 			"checksumSHA1": "mbhJnsNwGAwkTQH5c2hVRO9YmxA=",
@@ -83,20 +83,20 @@
 		{
 			"checksumSHA1": "aTiJJQgo4zVRwQ9O3y0IY7O9cAk=",
 			"path": "github.com/tinylib/msgp/msgp",
-			"revision": "58d334d948735fbc930e06def9d6870de827e07d",
-			"revisionTime": "2016-03-28T02:32:21Z"
+			"revision": "05e600edf28f1b907005ddf6b0488fe68b819971",
+			"revisionTime": "2016-05-24T15:06:06Z"
 		},
 		{
 			"checksumSHA1": "vE43s37+4CJ2CDU6TlOUOYE0K9c=",
 			"path": "golang.org/x/crypto/bcrypt",
-			"revision": "77f4136a99ffb5ecdbdd0226bd5cb146cf56bc0e",
-			"revisionTime": "2016-06-07T10:36:12Z"
+			"revision": "f6b343c37ca80bfa8ea539da67a0b621f84fab1d",
+			"revisionTime": "2016-12-21T04:54:10Z"
 		},
 		{
 			"checksumSHA1": "JsJdKXhz87gWenMwBeejTOeNE7k=",
 			"path": "golang.org/x/crypto/blowfish",
-			"revision": "77f4136a99ffb5ecdbdd0226bd5cb146cf56bc0e",
-			"revisionTime": "2016-06-07T10:36:12Z"
+			"revision": "f6b343c37ca80bfa8ea539da67a0b621f84fab1d",
+			"revisionTime": "2016-12-21T04:54:10Z"
 		}
 	],
 	"rootPath": "github.com/mailhog/MailHog-UI"
