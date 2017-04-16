@@ -21,11 +21,13 @@ type Web struct {
 	asset  func(string) ([]byte, error)
 }
 
-func CreateWeb(cfg *config.Config, pat *pat.Router, asset func(string) ([]byte, error)) *Web {
+func CreateWeb(cfg *config.Config, r http.Handler, asset func(string) ([]byte, error)) *Web {
 	web := &Web{
 		config: cfg,
 		asset:  asset,
 	}
+
+	pat := r.(*pat.Router)
 
 	WebPath = cfg.WebPath
 
