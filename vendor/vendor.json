@@ -59,14 +59,14 @@
 		{
 			"checksumSHA1": "Cfa44hA5oRKUiOPYu3glAg69cUc=",
 			"path": "github.com/mailhog/MailHog/config",
-			"revision": "a6aee3ed1b49c54af2e9620224d6455f56e6e6d9",
-			"revisionTime": "2017-04-16T18:38:42Z"
+			"revision": "50802a0753b632e92d509214bf4314bad7758311",
+			"revisionTime": "2017-04-16T22:27:18Z"
 		},
 		{
 			"checksumSHA1": "vyMXU+/pSliAx1yRf6YdKRhF9Ik=",
 			"path": "github.com/mailhog/http",
-			"revision": "f60054419202104f75c0fcaf132ca6e2ceae37f4",
-			"revisionTime": "2016-08-10T07:45:55Z"
+			"revision": "2e653938bf190d0e2fbe4825ce74e5bc149a62f2",
+			"revisionTime": "2017-04-16T22:27:52Z"
 		},
 		{
 			"checksumSHA1": "mbhJnsNwGAwkTQH5c2hVRO9YmxA=",
