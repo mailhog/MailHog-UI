@@ -191,8 +191,13 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   }
 
   $scope.getSender = function(message) {
-    return $scope.tryDecodeMime($scope.getDisplayName(message.Content.Headers["From"][0]) ||
-                                message.From.Mailbox + "@" + message.From.Domain);
+    var from = message.Content.Headers["From"];
+    if (from && from.length > 0) {
+      from = $scope.getDisplayName(from);
+    } else {
+      from = message.From.Mailbox + "@" + message.From.Domain;
+    }
+    return $scope.tryDecodeMime(from);
   }
 
   $scope.getDisplayName = function(value) {
