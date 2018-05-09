@@ -281,11 +281,14 @@ function decodeQuotedPrintableHelper(str, prefix) {
   var decoded_bytes = [];
   for (var i = 0; i < str.length;) {
     if (str.charAt(i) == prefix) {
-      decoded_bytes.push(parseInt(str.substr(i + 1, 2), 16));
+      if ((i + 1) < str.length) {
+      	decoded_bytes.push(parseInt(str.substr(i + 1, 2), 16));
+      }
+
       i += 3;
     } else {
       decoded_bytes.push(str.charCodeAt(i));
-      ++i;
+	  ++i;
     }
   }
   return decoded_bytes;
