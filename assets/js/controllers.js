@@ -413,7 +413,9 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   $scope.tryDecodeContent = function(message) {
     var charset = "UTF-8"
     if(message.Content.Headers["Content-Type"][0]) {
-      // TODO
+        if('text/plain; charset=ISO-2022-JP' == message.Content.Headers["Content-Type"][0]){
+          charset = "ISO2022JP"
+        }
     }
 
     var content = message.Content.Body;
@@ -430,7 +432,12 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
           content = content.replace(/\r?\n|\r/gm,"");
           content = unescapeFromBase64(content, charset);
           break;
-      }
+        case '7bit':
+          content = decodeQuotedPrintable(content);
+          content = convertBytesToUnicodeCodePoints(content, charset);
+          content = convertUnicodeCodePointsToString(content);
+          break;
+        }
     }
 
     return content;
