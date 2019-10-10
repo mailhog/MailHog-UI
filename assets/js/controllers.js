@@ -413,7 +413,8 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   $scope.tryDecodeContent = function(message) {
     var charset = "UTF-8"
     if(message.Content.Headers["Content-Type"][0]) {
-        if('text/plain; charset=ISO-2022-JP' == message.Content.Headers["Content-Type"][0]){
+        var ctype = normalizeEncodingName(message.Content.Headers["Content-Type"][0]);
+        if('TEXT/PLAIN; CHARSET=ISO2022JP' == message.Content.Headers["Content-Type"][0]){
           charset = "ISO2022JP"
         }
     }
