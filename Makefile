@@ -9,6 +9,9 @@ bindata: bindata-deps
 
 bindata-deps:
 	go get github.com/jteeuwen/go-bindata/...
+	go get github.com/gorilla/pat
+	go get github.com/ian-kent/go-log/log
+	go get github.com/mailhog/http
 
 fmt:
 	go fmt ./...
