@@ -11,6 +11,7 @@ func DefaultConfig() *Config {
 		APIHost:    "",
 		UIBindAddr: "0.0.0.0:8025",
 		WebPath:    "",
+		SiteName:   "MailHog",
 	}
 }
 
@@ -18,6 +19,7 @@ type Config struct {
 	APIHost    string
 	UIBindAddr string
 	WebPath    string
+	SiteName   string
 }
 
 var cfg = DefaultConfig()
@@ -29,4 +31,5 @@ func Configure() *Config {
 func RegisterFlags() {
 	flag.StringVar(&cfg.APIHost, "api-host", envconf.FromEnvP("MH_API_HOST", "").(string), "API URL for MailHog UI to connect to, e.g. http://some.host:1234")
 	flag.StringVar(&cfg.UIBindAddr, "ui-bind-addr", envconf.FromEnvP("MH_UI_BIND_ADDR", "0.0.0.0:8025").(string), "HTTP bind interface and port for UI, e.g. 0.0.0.0:8025 or just :8025")
+	flag.StringVar(&cfg.SiteName, "site-name", envconf.FromEnvP("MH_SITE_NAME", "MailHog").(string), "Site name displayed on the web UI")
 }
