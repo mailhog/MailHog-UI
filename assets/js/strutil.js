@@ -700,7 +700,8 @@ var OUTPUT_CONVERTERS = {
   'ISO88591':  convertUnicodeCodePointsToIso88591Bytes,
   'SHIFTJIS':  convertUnicodeCodePointsToSjisBytes,
   'EUCJP':     convertUnicodeCodePointsToEucJpBytes,
-  'UTF8':      convertUnicodeCodePointsToUtf8Bytes
+  'UTF8':      convertUnicodeCodePointsToUtf8Bytes,
+  'USASCII':   convertUnicodeCodePointsToUtf8Bytes
 }
 
 var INPUT_CONVERTERS = {
@@ -708,7 +709,8 @@ var INPUT_CONVERTERS = {
   'ISO88591':  convertIso88591BytesToUnicodeCodePoints,
   'SHIFTJIS':  convertSjisBytesToUnicodeCodePoints,
   'EUCJP':     convertEucJpBytesToUnicodeCodePoints,
-  'UTF8':      convertUtf8BytesToUnicodeCodePoints
+  'UTF8':      convertUtf8BytesToUnicodeCodePoints,
+  'USASCII':   convertUtf8BytesToUnicodeCodePoints
 }
 
 function convertUnicodeCodePointsToBytes(unicode_codes, encoding) {
