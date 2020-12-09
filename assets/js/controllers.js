@@ -95,6 +95,12 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
       $scope.getJim()
     })
   }
+  $scope.hideJim = function() {
+    localStorage.setItem('hideJimSection', true);
+    $scope.jimSectionHidden = true;
+  }
+  $scope.jimSectionHidden = localStorage.getItem('hideJimSection') === 'true';
+
 
   $(function() {
     $scope.openStream();

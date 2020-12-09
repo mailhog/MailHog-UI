@@ -81,7 +81,11 @@
             </li>
           </ul>
 
-          <div class="well jim-well">
+          <div class="well jim-well" ng-hide="jimSectionHidden">
+            <a href="#" ng-click="hideJim()" class="pull-right">
+              <span class="glyphicon glyphicon-remove"></span>
+              Hide
+            </a>
             <h3>Jim</h3>
             <p>
               Jim is a chaos monkey.<br>
