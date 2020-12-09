@@ -291,6 +291,14 @@ function decodeQuotedPrintableHelper(str, prefix) {
   return decoded_bytes;
 }
 
+function decodeByte(str) {
+  var decoded_bytes = [];
+  for (var i = 0; i < str.length;++i) {
+    decoded_bytes.push(str.charCodeAt(i));    
+  }
+  return decoded_bytes;
+}
+
 // "=E3=81=82=E3=81=84" => [ 0xE3, 0x81, 0x82, 0xE3, 0x81, 0x84 ]
 function decodeQuotedPrintable(str) {
   str = str.replace(/_/g, " ")  // RFC 2047.
