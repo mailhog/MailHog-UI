@@ -13,4 +13,4 @@ bindata-deps:
 fmt:
 	go fmt ./...
 
-.PNONY: all ui bindata bindata-deps fmt
+.PHONY: all ui bindata bindata-deps fmt
