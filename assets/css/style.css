@@ -130,7 +130,7 @@
 /* Preview */
 #preview-plain, #preview-source {
   white-space: pre;
-  font-family: Courier New, Courier, System, fixed-width;
+  font-family: Courier New, Courier, monospace, System, fixed-width;
   padding: 10px;
 }
 
