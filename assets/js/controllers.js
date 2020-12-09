@@ -11,6 +11,15 @@ mailhogApp.directive('targetBlank', function(){
   };
 });
 
+function caseInsensitiveGetProperty(obj, prop) {
+  prop = prop.toString().toLowerCase();
+  for(p in obj) {
+    if(p.toLowerCase() === prop) {
+      return obj[p];
+    }
+  }
+}
+
 function guid() {
   function s4() {
     return Math.floor((1 + Math.random()) * 0x10000)
@@ -412,7 +421,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
 
   $scope.tryDecodeContent = function(message) {
     var charset = "UTF-8"
-    if(message.Content.Headers["Content-Type"][0]) {
+    if(caseInsensitiveGetProperty(message.Content.Headers, "Content-Type")[0]) {
       // TODO
     }
 
@@ -457,7 +466,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
   }
 
   $scope.getMessagePlain = function(message) {
-    if (message.Content.Headers && message.Content.Headers["Content-Type"] && message.Content.Headers["Content-Type"][0].match("text/plain")) {
+    if (message.Content.Headers && caseInsensitiveGetProperty(message.Content.Headers, "Content-Type") && caseInsensitiveGetProperty(message.Content.Headers, "Content-Type")[0].match("text/plain")) {
       return $scope.tryDecode(message.Content);
     }
     var l = $scope.findMatchingMIME(message, "text/plain");
@@ -471,11 +480,12 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
     // TODO cache results
     if(part.MIME) {
       for(var p in part.MIME.Parts) {
-        if("Content-Type" in part.MIME.Parts[p].Headers) {
-          if(part.MIME.Parts[p].Headers["Content-Type"].length > 0) {
-            if(part.MIME.Parts[p].Headers["Content-Type"][0].match(mime + ";?.*")) {
+        var contentType = caseInsensitiveGetProperty(part.MIME.Parts[p].Headers, "Content-Type");
+        if(contentType) {
+          if(contentType.length > 0) {
+            if(contentType[0].match(mime + ";?.*")) {
               return part.MIME.Parts[p];
-            } else if (part.MIME.Parts[p].Headers["Content-Type"][0].match(/multipart\/.*/)) {
+            } else if (contentType[0].match(/multipart\/.*/)) {
               var f = $scope.findMatchingMIME(part.MIME.Parts[p], mime);
               if(f != null) {
                 return f;
@@ -521,7 +531,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
 	}
 
   $scope.tryDecode = function(l){
-    if(l.Headers && l.Headers["Content-Type"] && l.Headers["Content-Transfer-Encoding"]){
+    if(l.Headers && caseInsensitiveGetProperty(l.Headers, "Content-Type") && l.Headers["Content-Transfer-Encoding"]){
       return $scope.tryDecodeContent({Content:l});
     }else{
       return l.Body;
