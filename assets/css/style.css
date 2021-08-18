@@ -157,6 +157,10 @@
   padding: 2px 10px
 }
 
+.headers .to-email-address + .to-email-address::before {
+  content: ', ';
+}
+
 .mime-part {
   padding: 10px;
 }
