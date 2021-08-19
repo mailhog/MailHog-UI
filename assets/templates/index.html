@@ -157,6 +157,20 @@
               {{ tryDecodeMime((preview.Content.Headers["To"] || []).join(', ') || preview.To[0].Mailbox + "@" + preview.To[0].Domain) }}
             </td>
           </tr>
+          <tr ng-if="preview.Content.Headers['Cc'].length">
+            <th>Cc</th>
+            <td>
+              {{ tryDecodeMime((preview.Content.Headers["Cc"] || []).join(', ')) }}
+            </td>
+          </tr>
+          <tr ng-if="preview.Bcc.length">
+            <th>Bcc</th>
+            <td>
+              <span ng-repeat="to in preview.Bcc" class="to-email-address">
+                {{ to.Mailbox }}@{{ to.Domain }}
+              </span>
+            </td>
+          </tr>
         </tbody>
         <tbody ng-if="previewAllHeaders">
           <tr ng-repeat="(header, value) in preview.Content.Headers">
