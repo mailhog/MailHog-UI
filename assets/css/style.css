@@ -39,7 +39,6 @@
 }
 
 .left-inner-addon .glyphicon {
-  color: #aaa;
   position: absolute;
   padding: 9px 10px;
   pointer-events: none;
@@ -49,14 +48,6 @@
 /* Sidebar nav */
 .nav-stacked {
   margin-top: 10px;
-}
-
-.has-event-source {
-  color: green;
-}
-
-.no-event-source {
-  color: red;
 }
 
 /*******/
@@ -83,7 +74,7 @@
 /* Toolbar */
 .toolbar {
   padding: 5px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid;
 }
 
 .toolbar .btn {
@@ -116,13 +107,12 @@
 }
 
 .msglist-message {
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid;
   padding: 5px 0;
   cursor: pointer;
 }
 
 .msglist-message .subject.unread {
-  color: #666;
   font-weight: bold;
 }
 
@@ -149,7 +139,6 @@
 .headers tbody th {
   white-space: nowrap;
   text-align: right;
-  color: #666;
   font-weight: normal;
 }
 
@@ -159,4 +148,27 @@
 
 .mime-part {
   padding: 10px;
+}
+
+
+/***********/
+/* Colors */
+.left-inner-addon .glyphicon {
+  color: #aaa;
+}
+
+.has-event-source {
+  color: green;
+}
+
+.no-event-source {
+  color: red;
+}
+
+.toolbar, .msglist-message {
+  border-bottom-color: #ccc;
+}
+
+.msglist-message .subject.unread, .headers tbody th {
+  color: #666;
 }
