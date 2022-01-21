@@ -473,13 +473,14 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
       for(var p in part.MIME.Parts) {
         if("Content-Type" in part.MIME.Parts[p].Headers) {
           if(part.MIME.Parts[p].Headers["Content-Type"].length > 0) {
-            if(part.MIME.Parts[p].Headers["Content-Type"][0].match(mime + ";?.*")) {
-              return part.MIME.Parts[p];
-            } else if (part.MIME.Parts[p].Headers["Content-Type"][0].match(/multipart\/.*/)) {
+            if (part.MIME.Parts[p].Headers["Content-Type"][0].match(/multipart\/.*/)) {
               var f = $scope.findMatchingMIME(part.MIME.Parts[p], mime);
               if(f != null) {
                 return f;
               }
+            }
+            if(part.MIME.Parts[p].Headers["Content-Type"][0].match(mime + ";?.*")) {
+              return part.MIME.Parts[p];
             }
           }
         }
