@@ -160,3 +160,9 @@
 .mime-part {
   padding: 10px;
 }
+
+/*************/
+/* Dark mode */
+#github.theme-dark {
+  filter: grayscale(1) invert(1);
+}
