@@ -163,6 +163,6 @@
 
 /*************/
 /* Dark mode */
-.theme-dark {
+#github.theme-dark {
   filter: grayscale(1) invert(1);
 }
