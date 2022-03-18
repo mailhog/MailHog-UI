@@ -10,7 +10,8 @@
     <link rel="icon" type="image/png" href="images/hog.png">
 
     <link rel="stylesheet" href="css/jquery-ui-1.10.4-smoothness.css">
-    <link rel="stylesheet" href="css/bootstrap-3.3.2.min.css">
+    <link rel="stylesheet" href="css/bootstrap-3.3.2.min.css" id="theme-light">
+    <link rel="stylesheet" href="" id="theme-dark">
     <link rel="stylesheet" href="css/style.css">
   </head>
   <body ng-controller="MailCtrl" ng-click="keepopen=false">
@@ -47,8 +48,11 @@
 
           <ul class="nav navbar-nav navbar-right">
             <li>
+              <a href="javascript:void()" id="theme-toggler" onclick="toggleTheme()" title="Switch beetwen dark and light mode (currently light mode)">☀️ Light</a>
+            </li>
+            <li>
               <a target="_blank" href="https://github.com/mailhog/MailHog">
-                <img src="images/github.png" height="16" alt="GitHub"> GitHub
+                <img id="github" src="images/github.png" height="16" alt="GitHub"> GitHub
               </a>
             </li>
           </ul>
@@ -144,6 +148,7 @@
     <script src="js/filesize-3.1.2.min.js"></script>
     <script src="js/strutil.js"></script>
     <script src="js/controllers.js"></script>
+    <script src="js/theme-toggler.js"></script>
     <script>
       function endsWith(str, suffix) {
         return str.indexOf(suffix, str.length - suffix.length) !== -1;
