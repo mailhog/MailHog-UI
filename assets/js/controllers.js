@@ -211,7 +211,6 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
 
   $scope.startEvent = function(name, args, glyphicon) {
     var eID = guid();
-    //console.log("Starting event '" + name + "' with id '" + eID + "'")
     var e = {
       id: eID,
       name: name,
@@ -235,10 +234,7 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
         var e = this;
         e.complete = true;
         $scope.eventDone++;
-        if(this.failed) {
-          // console.log("Failed event '" + e.name + "' with id '" + eID + "'")
-        } else {
-          // console.log("Completed event '" + e.name + "' with id '" + eID + "'")
+        if(!this.failed) {
           $timeout(function() {
             e.remove();
           }, 10000);
@@ -250,7 +246,6 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
         this.done();
       },
       remove: function() {
-        // console.log("Deleted event '" + e.name + "' with id '" + eID + "'")
         if(e.failed) {
           $scope.eventFailed--;
         }
@@ -367,7 +362,6 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
             }
           }
         }
-        console.log(data.$cidMap)
         // TODO
         // - scan HTML parts for elements containing CID URI and replace
 
@@ -504,7 +498,6 @@ mailhogApp.controller('MailCtrl', function ($scope, $http, $sce, $timeout) {
     return false;
   }
   $scope.getMessageHTML = function(message) {
-    console.log(message);
     for(var header in message.Content.Headers) {
       if(header.toLowerCase() == 'content-type') {
         if(message.Content.Headers[header][0].match("text/html")) {
